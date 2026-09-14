@@ -1,0 +1,168 @@
+Enabling archivelogs
+
+mkdir -p /u01/archives
+
+archive_mode = on
+archive_command = 'cp %p /u01/archives/%f'
+
+archive_command = 'cp %p /u01/archives/%f && cp %p /u02/location2/%f'
+
+
+copy from wal files to archive location
+cp 00000001000000020000008C /u01/archives/00000001000000020000008C
+
+
+postgres=# select pg_switch_wal();
+ pg_switch_wal
+---------------
+ 2/8C4D11F8
+(1 row)
+
+postgres=# \q
+[postgres@rajesh-a01 archives]$
+[postgres@rajesh-a01 archives]$ ls -lrt
+total 16384
+-rw------- 1 postgres postgres 16777216 Apr 24 14:37 00000001000000020000008C
+[postgres@rajesh-a01 archives]$
+
+
+postgres@rajesh-a01 ~]$ mkdir -p /u01/backup
+postgres@rajesh-a01 ~]$ pg_basebackup -D /u01/backup
+
+[postgres@rajesh-a01 ~]$ pg_basebackup -D /u01/backup
+[postgres@rajesh-a01 ~]$
+[postgres@rajesh-a01 ~]$ /usr/pgsql-15/bin/pg_ctl -D /u01/pgsql/15 stop
+waiting for server to shut down.... done
+server stopped
+[postgres@rajesh-a01 ~]$
+[postgres@rajesh-a01 ~]$ /usr/pgsql-15/bin/pg_ctl -D /u01/backup start
+waiting for server to start....2025-04-24 14:47:59.786 UTC [11229] FATAL:  data directory "/u01/backup" has invalid permissions
+2025-04-24 14:47:59.786 UTC [11229] DETAIL:  Permissions should be u=rwx (0700) or u=rwx,g=rx (0750).
+ stopped waiting
+pg_ctl: could not start server
+Examine the log output.
+[postgres@rajesh-a01 ~]$
+[postgres@rajesh-a01 ~]$ chmod 700 /u01/backup
+[postgres@rajesh-a01 ~]$
+[postgres@rajesh-a01 ~]$ /usr/pgsql-15/bin/pg_ctl -D /u01/backup start
+waiting for server to start....2025-04-24 14:48:14.658 UTC [11267] LOG:  redirecting log output to logging collector process
+2025-04-24 14:48:14.658 UTC [11267] HINT:  Future log output will appear in directory "log".
+ done
+server started
+[postgres@rajesh-a01 ~]$
+[postgres@rajesh-a01 ~]$ ps -ef | grep postgres
+root        5774     860  0 12:46 ?        00:00:00 sshd: postgres [priv]
+postgres    5779       1  0 12:46 ?        00:00:00 /usr/lib/systemd/systemd --user
+postgres    5783    5779  0 12:46 ?        00:00:00 (sd-pam)
+postgres    5790    5774  0 12:46 ?        00:00:00 sshd: postgres@pts/0
+postgres    5791    5790  0 12:46 pts/0    00:00:00 -bash
+root       10510     860  0 14:31 ?        00:00:00 sshd: postgres [priv]
+postgres   10515   10510  0 14:31 ?        00:00:00 sshd: postgres@pts/1
+postgres   10516   10515  0 14:31 pts/1    00:00:00 -bash
+postgres   11267       1  0 14:48 ?        00:00:00 /usr/pgsql-15/bin/postgres -D /u01/backup
+postgres   11268   11267  0 14:48 ?        00:00:00 postgres: logger
+postgres   11269   11267  0 14:48 ?        00:00:00 postgres: checkpointer
+postgres   11270   11267  0 14:48 ?        00:00:00 postgres: background writer
+postgres   11272   11267  0 14:48 ?        00:00:00 postgres: walwriter
+postgres   11273   11267  0 14:48 ?        00:00:00 postgres: autovacuum launcher
+postgres   11274   11267  0 14:48 ?        00:00:00 postgres: archiver
+postgres   11275   11267  0 14:48 ?        00:00:00 postgres: logical replication launcher
+postgres   11276   10516  0 14:48 pts/1    00:00:00 ps -ef
+postgres   11277   10516  0 14:48 pts/1    00:00:00 grep --color=auto postgres
+[postgres@rajesh-a01 ~]$
+[postgres@rajesh-a01 ~]$
+
+
+/usr/pgsql-15/bin/pg_basebackup -D /u01/backup -Ft --checkpoint=fast -P -z -h 192.168.110.174
+
+[postgres@rajesh-a01 ~]$ pg_basebackup -D /u01/backup -Ft --checkpoint=fast -P -z
+265892/265892 kB (100%), 1/1 tablespace
+[postgres@rajesh-a01 ~]$
+[postgres@rajesh-a01 ~]$ cd /u01/backup
+[postgres@rajesh-a01 backup]$
+[postgres@rajesh-a01 backup]$ ls -lrt
+total 61280
+-rw------- 1 postgres postgres 62548290 Apr 24 14:50 base.tar.gz
+-rw------- 1 postgres postgres   177055 Apr 24 14:50 backup_manifest
+-rw------- 1 postgres postgres    17104 Apr 24 14:50 pg_wal.tar.gz       --> wals generated during the backup
+[postgres@rajesh-a01 backup]$
+
+Extract the files 
+
+tar -xvf base.tar.gz
+mv pg_wal.tar.gz pg_wal
+cd pg_wal
+tar -xvf pg_wal.tar.gz
+
+[postgres@rajesh-a01 backup]$ /usr/pgsql-15/bin/pg_verifybackup /u01/backup
+backup successfully verified
+[postgres@rajesh-a01 backup]$
+[postgres@rajesh-a01 backup]$ cat backup_label
+START WAL LOCATION: 2/93000028 (file 000000010000000200000093)
+CHECKPOINT LOCATION: 2/93000060
+BACKUP METHOD: streamed
+BACKUP FROM: primary
+START TIME: 2025-04-24 14:50:49 UTC
+LABEL: pg_basebackup base backup
+START TIMELINE: 1
+[postgres@rajesh-a01 backup]$
+
+
+If backup_label file there., then postmaster thinks that it is a restored backup
+If backup_label file not there, then it is a normal shutdown
+
+backup_label is important while restoring the data.
+
+=============
+[postgres@rajesh-a01 pg_wal]$ cd /u01/archives
+[postgres@rajesh-a01 archives]$ ls -lrt
+total 147464
+-rw------- 1 postgres postgres 16777216 Apr 24 14:37 00000001000000020000008C
+-rw------- 1 postgres postgres 16777216 Apr 24 14:44 00000001000000020000008D
+-rw------- 1 postgres postgres 16777216 Apr 24 14:44 00000001000000020000008E
+-rw------- 1 postgres postgres 16777216 Apr 24 14:47 00000001000000020000008F
+-rw------- 1 postgres postgres 16777216 Apr 24 14:47 000000010000000200000090
+-rw------- 1 postgres postgres      341 Apr 24 14:47 000000010000000200000090.00000028.backup
+-rw------- 1 postgres postgres 16777216 Apr 24 14:48 000000010000000200000091
+-rw------- 1 postgres postgres 16777216 Apr 24 14:50 000000010000000200000092
+-rw------- 1 postgres postgres 16777216 Apr 24 14:50 000000010000000200000093
+-rw------- 1 postgres postgres      341 Apr 24 14:50 000000010000000200000093.00000028.backup
+-rw------- 1 postgres postgres 16777216 Apr 24 15:56 000000010000000200000094
+
+
+Backup started at 000000010000000200000093 and completed at 000000010000000200000094.
+
+[postgres@rajesh-a01 ~]$ /usr/pgsql-15/bin/pg_ctl -D /u01/backup start
+
+
+The moment it starts the database ., backup_label  will become backup_label.old
+
+2025-04-24 16:00:31.137 UTC [15198] LOG:  starting backup recovery with redo LSN 2/93000028, checkpoint LSN 2/93000060, on timeline ID 1
+2025-04-24 16:00:31.143 UTC [15198] LOG:  redo starts at 2/93000028
+2025-04-24 16:00:31.146 UTC [15198] LOG:  completed backup recovery with redo LSN 2/93000028 and end LSN 2/93000138
+2025-04-24 16:00:31.146 UTC [15198] LOG:  consistent recovery state reached at 2/93000138
+2025-04-24 16:00:31.146 UTC [15198] LOG:  redo done at 2/93000138 system usage: CPU: user: 0.00 s, system: 0.00 s, elapsed: 0.00 s
+2025-04-24 16:00:31.178 UTC [15196] LOG:  checkpoint starting: end-of-recovery immediate wait
+2025-04-24 16:00:31.184 UTC [15196] LOG:  checkpoint complete: wrote 3 buffers (0.0%); 0 WAL file(s) added, 0 removed, 1 recycled; write=0.001 s, sync=0.002 s, total=0.008 s; sync files=2, longest=0.002 s, average=0.001 s; distance=16384 kB, estimate=16384 kB
+2025-04-24 16:00:31.188 UTC [15194] LOG:  database system is ready to accept connections
+
+================
+[postgres@rajesh-a01 ~]$  /usr/pgsql-15/bin/pg_basebackup -D /u01/backup/ -Ft -v --checkpoint=fast
+pg_basebackup: initiating base backup, waiting for checkpoint to complete
+pg_basebackup: checkpoint completed
+pg_basebackup: write-ahead log start point: 2/96000028 on timeline 1
+pg_basebackup: starting background WAL receiver
+pg_basebackup: created temporary replication slot "pg_basebackup_15990"
+pg_basebackup: write-ahead log end point: 2/96000138
+pg_basebackup: waiting for background process to finish streaming ...
+pg_basebackup: syncing data to disk ...
+pg_basebackup: renaming backup_manifest.tmp to backup_manifest
+pg_basebackup: base backup completed
+[postgres@rajesh-a01 ~]$
+
+==========================
+If archive location is unavailabale.., then in archive_status folder , we will have .ready file..
+all walfiles will be accumulated in pg_wal folder.
+
+
+

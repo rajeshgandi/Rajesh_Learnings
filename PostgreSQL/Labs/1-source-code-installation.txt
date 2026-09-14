@@ -1,0 +1,131 @@
+1. Source code installation
+	1. Download the software
+	wget https://ftp.postgresql.org/pub/source/v15.2/postgresql-15.2.tar.gz
+	
+	2. Extract it
+	tar -xf postgresql-15.2.tar.gz
+	
+	Pre-requisites
+	-----------------
+	1. make     | make --version 	    	| >3.80  		      | yum install make
+	2. gcc      | rpm -qa | grep gcc    	| gcc*			      | yum install gcc*
+	3. readline | rpm -qa | grep readline   | readline, readline-devel    | yum install readline*
+	4. zlib     | rpm -qa | grep zlib   	| zlib, zlib-devel            | yum install zlib*
+	
+	Short Version Installation
+	----------------------------
+	cd /root/postgresql-15.2
+	
+    	./configure					#check if pre requisites installed or not?
+    	make						#compile all C programs
+    	make install					#run all C programs
+    
+	useradd postgres				#add postgres user to control all postgres activities
+	passwd postgres					#give password
+    	mkdir -p /u01					#Create mount point
+   	
+	chown postgres:postgres /u01			#Gave full permission on mount point
+    	mkdir -p /u01/pgsql/15				#decide the database files location
+    	chown -R postgres:postgres /u01/pgsql/15    	#Gave full permission to postgres user
+	su - postgres					#switch to postgres
+	
+	/usr/local/pgsql/bin/initdb -D /u01/pgsql/15			#initializing the cluster
+	/usr/local/pgsql/bin/pg_ctl -D /u01/pgsql/15 start		#start the cluster
+	/usr/local/pgsql/bin/psql					#login to database
+
+[root@rajesh-a01 postgresql-15.2]$ /usr/local/pgsql/bin/psql -V
+psql (PostgreSQL) 15.2
+[root@rajesh-a01 postgresql-15.2]$
+[root@rajesh-a01 postgresql-15.2]$ mkdir -p /u01
+[root@rajesh-a01 postgresql-15.2]$ chown postgres:postgres /u01
+[root@rajesh-a01 postgresql-15.2]$ mkdir -p /u01/pgsql/15
+[root@rajesh-a01 postgresql-15.2]$ chown -R postgres:postgres /u01/pgsql/15
+[root@rajesh-a01 postgresql-15.2]$ su - postgres
+Last login: Sun Apr  6 15:00:36 UTC 2025 from 172.18.66.131 on pts/0
+[postgres@rajesh-a01 ~]$
+[postgres@rajesh-a01 ~]$ /usr/local/pgsql/bin/initdb -D /u01/pgsql/15
+The files belonging to this database system will be owned by user "postgres".
+This user must also own the server process.
+
+The database cluster will be initialized with locale "en_US.UTF-8".
+The default database encoding has accordingly been set to "UTF8".
+The default text search configuration will be set to "english".
+
+Data page checksums are disabled.
+
+fixing permissions on existing directory /u01/pgsql/15 ... ok
+creating subdirectories ... ok
+selecting dynamic shared memory implementation ... posix
+selecting default max_connections ... 100
+selecting default shared_buffers ... 128MB
+selecting default time zone ... UTC
+creating configuration files ... ok
+running bootstrap script ... ok
+performing post-bootstrap initialization ... ok
+syncing data to disk ... ok
+
+initdb: warning: enabling "trust" authentication for local connections
+initdb: hint: You can change this by editing pg_hba.conf or using the option -A, or --auth-local and --auth-host, the next time you run initdb.
+
+Success. You can now start the database server using:
+
+    /usr/local/pgsql/bin/pg_ctl -D /u01/pgsql/15 -l logfile start
+
+[postgres@rajesh-a01 ~]$
+[postgres@rajesh-a01 ~]$ /usr/local/pgsql/bin/pg_ctl -D /u01/pgsql/15 start
+waiting for server to start....2025-04-06 17:41:21.625 UTC [17695] LOG:  starting PostgreSQL 15.2 on x86_64-pc-linux-gnu, compiled by gcc (GCC) 8.5.0 20210514 (Red Hat 8.5.0-24), 64-bit
+2025-04-06 17:41:21.625 UTC [17695] LOG:  listening on IPv6 address "::1", port 5432
+2025-04-06 17:41:21.625 UTC [17695] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2025-04-06 17:41:21.630 UTC [17695] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
+2025-04-06 17:41:21.636 UTC [17698] LOG:  database system was shut down at 2025-04-06 17:41:15 UTC
+2025-04-06 17:41:21.640 UTC [17695] LOG:  database system is ready to accept connections
+ done
+server started
+[postgres@rajesh-a01 ~]$
+[postgres@rajesh-a01 ~]$ psql
+-bash: psql: command not found
+[postgres@rajesh-a01 ~]$
+[postgres@rajesh-a01 ~]$ /usr/local/pgsql/bin/psql
+psql (15.2)
+Type "help" for help.
+
+postgres=#
+
+=====================================
+vi first.c
+#include<stdio.h>
+int main(void)
+{
+printf("Hello World \n");
+}
+
+[root@rajesh-a01 ~]$ gcc first.c -o first.o
+[root@rajesh-a01 ~]$ ./first.o
+Hello World
+
+--------------
+
+vi Makefile
+all:
+        gcc first.c -o first.o
+install:
+        ./first.o
+
+[root@rajesh-a01 ~]$ ls -lrt
+total 8
+-rw-r--r-- 1 root root 63 Apr  6 17:23 first.c
+-rw-r--r-- 1 root root 49 Apr  6 17:25 Makefile
+[root@rajesh-a01 ~]$
+[root@rajesh-a01 ~]$ make
+gcc first.c -o first.o
+[root@rajesh-a01 ~]$
+[root@rajesh-a01 ~]$ ls -lrt
+total 28
+-rw-r--r-- 1 root root    63 Apr  6 17:23 first.c
+-rw-r--r-- 1 root root    49 Apr  6 17:25 Makefile
+-rwxr-xr-x 1 root root 18096 Apr  6 17:26 first.o
+[root@rajesh-a01 ~]$
+[root@rajesh-a01 ~]$ make install
+./first.o
+Hello World
+

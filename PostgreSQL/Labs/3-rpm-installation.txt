@@ -1,0 +1,228 @@
+[root@rajesh-a01 ~]$ mkdir rpm
+[root@rajesh-a01 ~]$ cd rpm
+[root@rajesh-a01 rpm]$ ls -lrt
+total 0
+[root@rajesh-a01 rpm]$
+[root@rajesh-a01 rpm]$ wget https://download.postgresql.org/pub/repos/yum/15/redhat/rhel-8-x86_64/postgresql15-15.10-1PGDG.rhel8.x86_64.rpm
+--2025-04-06 18:07:06--  https://download.postgresql.org/pub/repos/yum/15/redhat/rhel-8-x86_64/postgresql15-15.10-1PGDG.rhel8.x86_64.rpm
+Resolving download.postgresql.org (download.postgresql.org)... 87.238.57.227, 147.75.85.69, 217.196.149.55, ...
+Connecting to download.postgresql.org (download.postgresql.org)|87.238.57.227|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 1700604 (1.6M) [application/x-redhat-package-manager]
+Saving to: ‘postgresql15-15.10-1PGDG.rhel8.x86_64.rpm’
+
+postgresql15-15.10-1PGDG.rhel8.x86_64.r 100%[============================================================================>]   1.62M  3.25MB/s    in 0.5s
+
+2025-04-06 18:07:07 (3.25 MB/s) - ‘postgresql15-15.10-1PGDG.rhel8.x86_64.rpm’ saved [1700604/1700604]
+
+[root@rajesh-a01 rpm]$
+[root@rajesh-a01 rpm]$ wget https://download.postgresql.org/pub/repos/yum/15/redhat/rhel-8-x86_64/postgresql15-contrib-15.10-1PGDG.rhel8.x86_64.rpm
+--2025-04-06 18:07:28--  https://download.postgresql.org/pub/repos/yum/15/redhat/rhel-8-x86_64/postgresql15-contrib-15.10-1PGDG.rhel8.x86_64.rpm
+Resolving download.postgresql.org (download.postgresql.org)... 72.32.157.246, 217.196.149.55, 147.75.85.69, ...
+Connecting to download.postgresql.org (download.postgresql.org)|72.32.157.246|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 774620 (756K) [application/x-redhat-package-manager]
+Saving to: ‘postgresql15-contrib-15.10-1PGDG.rhel8.x86_64.rpm’
+
+postgresql15-contrib-15.10-1PGDG.rhel8. 100%[============================================================================>] 756.46K  4.09MB/s    in 0.2s
+
+2025-04-06 18:07:29 (4.09 MB/s) - ‘postgresql15-contrib-15.10-1PGDG.rhel8.x86_64.rpm’ saved [774620/774620]
+
+[root@rajesh-a01 rpm]$ wget https://download.postgresql.org/pub/repos/yum/15/redhat/rhel-8-x86_64/postgresql15-devel-15.10-1PGDG.rhel8.x86_64.rpm
+--2025-04-06 18:07:51--  https://download.postgresql.org/pub/repos/yum/15/redhat/rhel-8-x86_64/postgresql15-devel-15.10-1PGDG.rhel8.x86_64.rpm
+Resolving download.postgresql.org (download.postgresql.org)... 87.238.57.227, 72.32.157.246, 217.196.149.55, ...
+Connecting to download.postgresql.org (download.postgresql.org)|87.238.57.227|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 2750812 (2.6M) [application/x-redhat-package-manager]
+Saving to: ‘postgresql15-devel-15.10-1PGDG.rhel8.x86_64.rpm’
+
+postgresql15-devel-15.10-1PGDG.rhel8.x8 100%[============================================================================>]   2.62M  4.66MB/s    in 0.6s
+
+2025-04-06 18:07:52 (4.66 MB/s) - ‘postgresql15-devel-15.10-1PGDG.rhel8.x86_64.rpm’ saved [2750812/2750812]
+
+[root@rajesh-a01 rpm]$ wget https://download.postgresql.org/pub/repos/yum/15/redhat/rhel-8-x86_64/postgresql15-libs-15.10-1PGDG.rhel8.x86_64.rpm
+--2025-04-06 18:08:04--  https://download.postgresql.org/pub/repos/yum/15/redhat/rhel-8-x86_64/postgresql15-libs-15.10-1PGDG.rhel8.x86_64.rpm
+Resolving download.postgresql.org (download.postgresql.org)... 147.75.85.69, 87.238.57.227, 72.32.157.246, ...
+Connecting to download.postgresql.org (download.postgresql.org)|147.75.85.69|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 302016 (295K) [application/x-redhat-package-manager]
+Saving to: ‘postgresql15-libs-15.10-1PGDG.rhel8.x86_64.rpm’
+
+postgresql15-libs-15.10-1PGDG.rhel8.x86 100%[============================================================================>] 294.94K  1.04MB/s    in 0.3s
+
+2025-04-06 18:08:05 (1.04 MB/s) - ‘postgresql15-libs-15.10-1PGDG.rhel8.x86_64.rpm’ saved [302016/302016]
+
+[root@rajesh-a01 rpm]$ wget https://download.postgresql.org/pub/repos/yum/15/redhat/rhel-8-x86_64/postgresql15-server-15.10-1PGDG.rhel8.x86_64.rpm
+--2025-04-06 18:08:25--  https://download.postgresql.org/pub/repos/yum/15/redhat/rhel-8-x86_64/postgresql15-server-15.10-1PGDG.rhel8.x86_64.rpm
+Resolving download.postgresql.org (download.postgresql.org)... 217.196.149.55, 147.75.85.69, 87.238.57.227, ...
+Connecting to download.postgresql.org (download.postgresql.org)|217.196.149.55|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 6346948 (6.1M) [application/x-redhat-package-manager]
+Saving to: ‘postgresql15-server-15.10-1PGDG.rhel8.x86_64.rpm’
+
+postgresql15-server-15.10-1PGDG.rhel8.x 100%[============================================================================>]   6.05M  7.72MB/s    in 0.8s
+
+2025-04-06 18:08:27 (7.72 MB/s) - ‘postgresql15-server-15.10-1PGDG.rhel8.x86_64.rpm’ saved [6346948/6346948]
+
+[root@rajesh-a01 rpm]$
+[root@rajesh-a01 rpm]$
+[root@rajesh-a01 rpm]$ ls -lrt
+total 11608
+-rw-r--r-- 1 root root  774620 Nov 20 16:05 postgresql15-contrib-15.10-1PGDG.rhel8.x86_64.rpm
+-rw-r--r-- 1 root root 1700604 Nov 20 16:05 postgresql15-15.10-1PGDG.rhel8.x86_64.rpm
+-rw-r--r-- 1 root root 2750812 Nov 20 16:05 postgresql15-devel-15.10-1PGDG.rhel8.x86_64.rpm
+-rw-r--r-- 1 root root  302016 Nov 20 16:05 postgresql15-libs-15.10-1PGDG.rhel8.x86_64.rpm
+-rw-r--r-- 1 root root 6346948 Nov 20 16:05 postgresql15-server-15.10-1PGDG.rhel8.x86_64.rpm
+[root@rajesh-a01 rpm]$
+[root@rajesh-a01 rpm]$ rpm -ivh postgresql15-libs-15.10-1PGDG.rhel8.x86_64.rpm
+Verifying...                          ################################# [100%]
+Preparing...                          ################################# [100%]
+Updating / installing...
+   1:postgresql15-libs-15.10-1PGDG.rhe################################# [100%]
+[root@rajesh-a01 rpm]$
+[root@rajesh-a01 rpm]$ rpm -ivh postgresql15-15.10-1PGDG.rhel8.x86_64.rpm
+Verifying...                          ################################# [100%]
+Preparing...                          ################################# [100%]
+Updating / installing...
+   1:postgresql15-15.10-1PGDG.rhel8   ################################# [100%]
+[root@rajesh-a01 rpm]$
+[root@rajesh-a01 rpm]$ rpm -ivh postgresql15-server-15.10-1PGDG.rhel8.x86_64.rpm
+Verifying...                          ################################# [100%]
+Preparing...                          ################################# [100%]
+Updating / installing...
+   1:postgresql15-server-15.10-1PGDG.r################################# [100%]
+[root@rajesh-a01 rpm]$
+[root@rajesh-a01 rpm]$ rpm -ivh postgresql15-contrib-15.10-1PGDG.rhel8.x86_64.rpm
+error: Failed dependencies:
+        libxslt.so.1()(64bit) is needed by postgresql15-contrib-15.10-1PGDG.rhel8.x86_64
+        libxslt.so.1(LIBXML2_1.0.11)(64bit) is needed by postgresql15-contrib-15.10-1PGDG.rhel8.x86_64
+        libxslt.so.1(LIBXML2_1.0.18)(64bit) is needed by postgresql15-contrib-15.10-1PGDG.rhel8.x86_64
+        libxslt.so.1(LIBXML2_1.0.22)(64bit) is needed by postgresql15-contrib-15.10-1PGDG.rhel8.x86_64
+[root@rajesh-a01 rpm]$
+[root@rajesh-a01 rpm]$ yum install libxslt*
+EL_8_Catweazle                                                                                                               137 kB/s | 3.0 kB     00:00
+EL_8_aws_cwagent                                                                                                             165 kB/s | 3.0 kB     00:00
+EL_8_fds_influx_observability-rpm                                                                                             81 kB/s | 1.5 kB     00:00
+EL_8_internal_fds_aws_tools                                                                                                  152 kB/s | 3.0 kB     00:00
+Sputnik_IPA_CRL                                                                                                              190 kB/s | 3.0 kB     00:00
+Dependencies resolved.
+=============================================================================================================================================================
+ Package                               Architecture              Version                               Repository                                       Size
+=============================================================================================================================================================
+Installing:
+ libxslt                               x86_64                    1.1.32-6.el8                          AlmaLinux_8_BaseOS_x86_64                       248 k
+ libxslt-devel                         x86_64                    1.1.32-6.el8                          AlmaLinux_8_AppStream_x86_64                    322 k
+Installing dependencies:
+ cmake-filesystem                      x86_64                    3.26.5-2.el8                          AlmaLinux_8_AppStream_x86_64                     44 k
+ libgcrypt-devel                       x86_64                    1.8.5-7.el8_6                         AlmaLinux_8_BaseOS_x86_64                       148 k
+ libgpg-error-devel                    x86_64                    1.31-1.el8                            AlmaLinux_8_BaseOS_x86_64                        64 k
+ libxml2-devel                         x86_64                    2.9.7-19.el8_10                       AlmaLinux_8_AppStream_x86_64                    1.0 M
+ xz-devel                              x86_64                    5.2.4-4.el8_6                         AlmaLinux_8_BaseOS_x86_64                        62 k
+
+Transaction Summary
+=============================================================================================================================================================
+Install  7 Packages
+
+Total download size: 1.9 M
+Installed size: 13 M
+Is this ok [y/N]: y
+Downloading Packages:
+(1/7): libxml2-devel-2.9.7-19.el8_10.x86_64.rpm                                                                               15 MB/s | 1.0 MB     00:00
+(2/7): cmake-filesystem-3.26.5-2.el8.x86_64.rpm                                                                              488 kB/s |  44 kB     00:00
+(3/7): libgpg-error-devel-1.31-1.el8.x86_64.rpm                                                                              2.2 MB/s |  64 kB     00:00
+(4/7): libxslt-devel-1.1.32-6.el8.x86_64.rpm                                                                                 1.7 MB/s | 322 kB     00:00
+(5/7): libgcrypt-devel-1.8.5-7.el8_6.x86_64.rpm                                                                              1.1 MB/s | 148 kB     00:00
+(6/7): xz-devel-5.2.4-4.el8_6.x86_64.rpm                                                                                     2.0 MB/s |  62 kB     00:00
+(7/7): libxslt-1.1.32-6.el8.x86_64.rpm                                                                                       2.3 MB/s | 248 kB     00:00
+-------------------------------------------------------------------------------------------------------------------------------------------------------------
+Total                                                                                                                        8.1 MB/s | 1.9 MB     00:00
+Running transaction check
+Transaction check succeeded.
+Running transaction test
+Transaction test succeeded.
+Running transaction
+  Preparing        :                                                                                                                                     1/1
+  Installing       : libgpg-error-devel-1.31-1.el8.x86_64                                                                                                1/7
+  Running scriptlet: libgpg-error-devel-1.31-1.el8.x86_64                                                                                                1/7
+  Installing       : libgcrypt-devel-1.8.5-7.el8_6.x86_64                                                                                                2/7
+  Running scriptlet: libgcrypt-devel-1.8.5-7.el8_6.x86_64                                                                                                2/7
+  Installing       : xz-devel-5.2.4-4.el8_6.x86_64                                                                                                       3/7
+  Installing       : libxslt-1.1.32-6.el8.x86_64                                                                                                         4/7
+  Installing       : cmake-filesystem-3.26.5-2.el8.x86_64                                                                                                5/7
+  Installing       : libxml2-devel-2.9.7-19.el8_10.x86_64                                                                                                6/7
+  Installing       : libxslt-devel-1.1.32-6.el8.x86_64                                                                                                   7/7
+  Running scriptlet: libxslt-devel-1.1.32-6.el8.x86_64                                                                                                   7/7
+  Verifying        : cmake-filesystem-3.26.5-2.el8.x86_64                                                                                                1/7
+  Verifying        : libxml2-devel-2.9.7-19.el8_10.x86_64                                                                                                2/7
+  Verifying        : libxslt-devel-1.1.32-6.el8.x86_64                                                                                                   3/7
+  Verifying        : libgcrypt-devel-1.8.5-7.el8_6.x86_64                                                                                                4/7
+  Verifying        : libgpg-error-devel-1.31-1.el8.x86_64                                                                                                5/7
+  Verifying        : libxslt-1.1.32-6.el8.x86_64                                                                                                         6/7
+  Verifying        : xz-devel-5.2.4-4.el8_6.x86_64                                                                                                       7/7
+
+Installed:
+  cmake-filesystem-3.26.5-2.el8.x86_64   libgcrypt-devel-1.8.5-7.el8_6.x86_64   libgpg-error-devel-1.31-1.el8.x86_64   libxml2-devel-2.9.7-19.el8_10.x86_64
+  libxslt-1.1.32-6.el8.x86_64            libxslt-devel-1.1.32-6.el8.x86_64      xz-devel-5.2.4-4.el8_6.x86_64
+
+Complete!
+[root@rajesh-a01 rpm]$
+[root@rajesh-a01 rpm]$ rpm -ivh postgresql15-contrib-15.10-1PGDG.rhel8.x86_64.rpm
+Verifying...                          ################################# [100%]
+Preparing...                          ################################# [100%]
+Updating / installing...
+   1:postgresql15-contrib-15.10-1PGDG.################################# [100%]
+[root@rajesh-a01 rpm]$
+[root@rajesh-a01 rpm]$ rpm -ivh postgresql15-devel-15.10-1PGDG.rhel8.x86_64.rpm
+Verifying...                          ################################# [100%]
+Preparing...                          ################################# [100%]
+Updating / installing...
+   1:postgresql15-devel-15.10-1PGDG.rh################################# [100%]
+
+
+
+
+[root@rajesh-a01 rpm]$ cd
+[root@rajesh-a01 ~]$ mkdir -p /u01/pgsql/15
+[root@rajesh-a01 ~]$ chown -R postgres:postgres /u01/pgsql/15
+[root@rajesh-a01 ~]$ su - postgres
+Last login: Sun Apr  6 18:16:40 UTC 2025 from 172.18.66.131 on pts/1
+
+postgres@rajesh-a01 ~]$ /usr/pgsql-15/bin/initdb -D /u01/pgsql/15
+The files belonging to this database system will be owned by user "postgres".
+This user must also own the server process.
+
+The database cluster will be initialized with locale "en_US.UTF-8".
+The default database encoding has accordingly been set to "UTF8".
+The default text search configuration will be set to "english".
+
+Data page checksums are disabled.
+
+fixing permissions on existing directory /u01/pgsql/15 ... ok
+creating subdirectories ... ok
+selecting dynamic shared memory implementation ... posix
+selecting default max_connections ... 100
+selecting default shared_buffers ... 128MB
+selecting default time zone ... UTC
+creating configuration files ... ok
+running bootstrap script ... ok
+performing post-bootstrap initialization ... ok
+syncing data to disk ... ok
+
+initdb: warning: enabling "trust" authentication for local connections
+initdb: hint: You can change this by editing pg_hba.conf or using the option -A, or --auth-local and --auth-host, the next time you run initdb.
+
+Success. You can now start the database server using:
+
+    /usr/pgsql-15/bin/pg_ctl -D /u01/pgsql/15 -l logfile start
+
+[postgres@rajesh-a01 ~]$ /usr/pgsql-15/bin/pg_ctl -D /u01/pgsql/15 start
+waiting for server to start....2025-04-06 18:22:13.752 UTC [59438] LOG:  redirecting log output to logging collector process
+2025-04-06 18:22:13.752 UTC [59438] HINT:  Future log output will appear in directory "log".
+ done
+server started
+[postgres@rajesh-a01 ~]$ /usr/pgsql-15/bin/psql
+psql (15.10)
+Type "help" for help.
+
+postgres=#
+

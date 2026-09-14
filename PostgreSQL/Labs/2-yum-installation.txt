@@ -1,0 +1,224 @@
+[postgres@rajesh-a01 ~]$ cd /etc/yum.repos.d
+[postgres@rajesh-a01 yum.repos.d]$ ls -lrt
+total 64
+-rw-r--r--. 1 root root 192 Apr  1 08:29 EL_8_influx_x86_64.repo
+-rw-r--r--. 1 root root 201 Apr  1 08:29 EL_SentinelOne_x86_64.repo
+-rw-r--r--. 1 root root 354 Apr  1 08:29 AlmaLinux_8_AppStream_x86_64.repo
+-rw-r--r--. 1 root root 345 Apr  1 08:29 AlmaLinux_8_BaseOS_x86_64.repo
+-rw-r--r--. 1 root root 345 Apr  1 08:29 AlmaLinux_8_extras_x86_64.repo
+-rw-r--r--. 1 root root 357 Apr  1 08:29 AlmaLinux_8_PowerTools_x86_64.repo
+-rw-r--r--. 1 root root 298 Apr  1 08:29 EL_8_epel_x86_64.repo
+-rw-r--r--. 1 root root 312 Apr  1 08:29 EL_8_puppet_x86_64.repo
+-rw-r--r--. 1 root root 196 Apr  1 08:29 EL_8_dlmengine_x86_64.repo
+-rw-r--r--. 1 root root 214 Apr  1 08:29 EL_8_patch_reporting_x86_64.repo
+-rw-r--r--. 1 root root 249 Apr  1 08:29 EL_8_fds_influx_observability-rpm.repo
+-rw-r--r--. 1 root root 196 Apr  1 08:29 EL_8_aws_cwagent.repo
+-rw-r--r--. 1 root root 231 Apr  6 14:53 EL_8_internal_fds_aws_tools.repo
+-rw-r--r--  1 root root 200 Apr  6 14:53 Sputnik_IPA_CRL.repo
+-rw-r--r--  1 root root 276 Apr  6 14:53 EL_8_internal_fds.orbit-puppet_package_agent_x86_64.repo
+-rw-r--r--. 1 root root 201 Apr  6 14:53 EL_8_Catweazle.repo
+[postgres@rajesh-a01 yum.repos.d]$
+[postgres@rajesh-a01 yum.repos.d]$ sudo dnf install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm
+EL_8_Catweazle                                                                                                               143 kB/s | 3.0 kB     00:00
+EL_8_aws_cwagent                                                                                                             169 kB/s | 3.0 kB     00:00
+EL_8_fds_influx_observability-rpm                                                                                             77 kB/s | 1.5 kB     00:00
+EL_8_internal_fds_aws_tools                                                                                                  187 kB/s | 3.0 kB     00:00
+Sputnik_IPA_CRL                                                                                                              152 kB/s | 3.0 kB     00:00
+pgdg-redhat-repo-latest.noarch.rpm                                                                                            37 kB/s |  15 kB     00:00
+Dependencies resolved.
+=============================================================================================================================================================
+ Package                                   Architecture                    Version                               Repository                             Size
+=============================================================================================================================================================
+Installing:
+ pgdg-redhat-repo                          noarch                          42.0-50PGDG                           @commandline                           15 k
+
+Transaction Summary
+=============================================================================================================================================================
+Install  1 Package
+
+Total size: 15 k
+Installed size: 15 k
+Downloading Packages:
+Running transaction check
+Transaction check succeeded.
+Running transaction test
+Transaction test succeeded.
+Running transaction
+  Preparing        :                                                                                                                                     1/1
+  Installing       : pgdg-redhat-repo-42.0-50PGDG.noarch                                                                                                 1/1
+  Verifying        : pgdg-redhat-repo-42.0-50PGDG.noarch                                                                                                 1/1
+
+Installed:
+  pgdg-redhat-repo-42.0-50PGDG.noarch
+
+Complete!
+[postgres@rajesh-a01 yum.repos.d]$
+[postgres@rajesh-a01 yum.repos.d]$ ls -lrt
+total 80
+-rw-r--r--  1 root root 13118 Mar 24 21:25 pgdg-redhat-all.repo
+-rw-r--r--. 1 root root   192 Apr  1 08:29 EL_8_influx_x86_64.repo
+-rw-r--r--. 1 root root   201 Apr  1 08:29 EL_SentinelOne_x86_64.repo
+-rw-r--r--. 1 root root   354 Apr  1 08:29 AlmaLinux_8_AppStream_x86_64.repo
+-rw-r--r--. 1 root root   345 Apr  1 08:29 AlmaLinux_8_BaseOS_x86_64.repo
+-rw-r--r--. 1 root root   345 Apr  1 08:29 AlmaLinux_8_extras_x86_64.repo
+-rw-r--r--. 1 root root   357 Apr  1 08:29 AlmaLinux_8_PowerTools_x86_64.repo
+-rw-r--r--. 1 root root   298 Apr  1 08:29 EL_8_epel_x86_64.repo
+-rw-r--r--. 1 root root   312 Apr  1 08:29 EL_8_puppet_x86_64.repo
+-rw-r--r--. 1 root root   196 Apr  1 08:29 EL_8_dlmengine_x86_64.repo
+-rw-r--r--. 1 root root   214 Apr  1 08:29 EL_8_patch_reporting_x86_64.repo
+-rw-r--r--. 1 root root   249 Apr  1 08:29 EL_8_fds_influx_observability-rpm.repo
+-rw-r--r--. 1 root root   196 Apr  1 08:29 EL_8_aws_cwagent.repo
+-rw-r--r--. 1 root root   231 Apr  6 14:53 EL_8_internal_fds_aws_tools.repo
+-rw-r--r--  1 root root   200 Apr  6 14:53 Sputnik_IPA_CRL.repo
+-rw-r--r--  1 root root   276 Apr  6 14:53 EL_8_internal_fds.orbit-puppet_package_agent_x86_64.repo
+-rw-r--r--. 1 root root   201 Apr  6 14:53 EL_8_Catweazle.repo
+
+[postgres@rajesh-a01 yum.repos.d]$ sudo dnf -qy module disable postgresql
+Importing GPG key 0x08B40D20:
+ Userid     : "PostgreSQL RPM Repository <pgsql-pkg-yum@lists.postgresql.org>"
+ Fingerprint: D4BF 08AE 67A0 B4C7 A1DB CCD2 40BC A2B4 08B4 0D20
+ From       : /etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL
+Importing GPG key 0x08B40D20:
+ Userid     : "PostgreSQL RPM Repository <pgsql-pkg-yum@lists.postgresql.org>"
+ Fingerprint: D4BF 08AE 67A0 B4C7 A1DB CCD2 40BC A2B4 08B4 0D20
+ From       : /etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL
+Importing GPG key 0x08B40D20:
+ Userid     : "PostgreSQL RPM Repository <pgsql-pkg-yum@lists.postgresql.org>"
+ Fingerprint: D4BF 08AE 67A0 B4C7 A1DB CCD2 40BC A2B4 08B4 0D20
+ From       : /etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL
+Importing GPG key 0x08B40D20:
+ Userid     : "PostgreSQL RPM Repository <pgsql-pkg-yum@lists.postgresql.org>"
+ Fingerprint: D4BF 08AE 67A0 B4C7 A1DB CCD2 40BC A2B4 08B4 0D20
+ From       : /etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL
+Importing GPG key 0x08B40D20:
+ Userid     : "PostgreSQL RPM Repository <pgsql-pkg-yum@lists.postgresql.org>"
+ Fingerprint: D4BF 08AE 67A0 B4C7 A1DB CCD2 40BC A2B4 08B4 0D20
+ From       : /etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL
+Importing GPG key 0x08B40D20:
+ Userid     : "PostgreSQL RPM Repository <pgsql-pkg-yum@lists.postgresql.org>"
+ Fingerprint: D4BF 08AE 67A0 B4C7 A1DB CCD2 40BC A2B4 08B4 0D20
+ From       : /etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL
+[postgres@rajesh-a01 yum.repos.d]$
+[postgres@rajesh-a01 yum.repos.d]$ sudo dnf install -y postgresql14-server
+EL_8_Catweazle                                                                                                               121 kB/s | 3.0 kB     00:00
+EL_8_aws_cwagent                                                                                                             170 kB/s | 3.0 kB     00:00
+EL_8_fds_influx_observability-rpm                                                                                             73 kB/s | 1.5 kB     00:00
+EL_8_internal_fds_aws_tools                                                                                                  115 kB/s | 3.0 kB     00:00
+Dependencies resolved.
+=============================================================================================================================================================
+ Package                                Architecture              Version                                 Repository                                    Size
+=============================================================================================================================================================
+Installing:
+ postgresql14-server                    x86_64                    14.17-1PGDG.rhel8                       pgdg14                                       5.7 M
+Installing dependencies:
+ libicu                                 x86_64                    60.3-2.el8_1                            AlmaLinux_8_BaseOS_x86_64                    8.8 M
+ postgresql14                           x86_64                    14.17-1PGDG.rhel8                       pgdg14                                       1.6 M
+ postgresql14-libs                      x86_64                    14.17-1PGDG.rhel8                       pgdg14                                       283 k
+
+Transaction Summary
+=============================================================================================================================================================
+Install  4 Packages
+
+Total download size: 16 M
+Installed size: 64 M
+Downloading Packages:
+(1/4): libicu-60.3-2.el8_1.x86_64.rpm                                                                                         62 MB/s | 8.8 MB     00:00
+(2/4): postgresql14-libs-14.17-1PGDG.rhel8.x86_64.rpm                                                                        367 kB/s | 283 kB     00:00
+(3/4): postgresql14-14.17-1PGDG.rhel8.x86_64.rpm                                                                             1.6 MB/s | 1.6 MB     00:00
+(4/4): postgresql14-server-14.17-1PGDG.rhel8.x86_64.rpm                                                                      4.6 MB/s | 5.7 MB     00:01
+-------------------------------------------------------------------------------------------------------------------------------------------------------------
+Total                                                                                                                         12 MB/s |  16 MB     00:01
+PostgreSQL 14 for RHEL / Rocky / AlmaLinux 8 - x86_64                                                                        2.4 MB/s | 2.4 kB     00:00
+Importing GPG key 0x08B40D20:
+ Userid     : "PostgreSQL RPM Repository <pgsql-pkg-yum@lists.postgresql.org>"
+ Fingerprint: D4BF 08AE 67A0 B4C7 A1DB CCD2 40BC A2B4 08B4 0D20
+ From       : /etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL
+Key imported successfully
+Running transaction check
+Transaction check succeeded.
+Running transaction test
+Transaction test succeeded.
+Running transaction
+  Preparing        :                                                                                                                                     1/1
+  Installing       : postgresql14-libs-14.17-1PGDG.rhel8.x86_64                                                                                          1/4
+  Running scriptlet: postgresql14-libs-14.17-1PGDG.rhel8.x86_64                                                                                          1/4
+  Installing       : libicu-60.3-2.el8_1.x86_64                                                                                                          2/4
+  Running scriptlet: libicu-60.3-2.el8_1.x86_64                                                                                                          2/4
+  Installing       : postgresql14-14.17-1PGDG.rhel8.x86_64                                                                                               3/4
+  Running scriptlet: postgresql14-14.17-1PGDG.rhel8.x86_64                                                                                               3/4
+  Running scriptlet: postgresql14-server-14.17-1PGDG.rhel8.x86_64                                                                                        4/4
+  Installing       : postgresql14-server-14.17-1PGDG.rhel8.x86_64                                                                                        4/4
+  Running scriptlet: postgresql14-server-14.17-1PGDG.rhel8.x86_64                                                                                        4/4
+  Verifying        : libicu-60.3-2.el8_1.x86_64                                                                                                          1/4
+  Verifying        : postgresql14-14.17-1PGDG.rhel8.x86_64                                                                                               2/4
+  Verifying        : postgresql14-libs-14.17-1PGDG.rhel8.x86_64                                                                                          3/4
+  Verifying        : postgresql14-server-14.17-1PGDG.rhel8.x86_64                                                                                        4/4
+
+Installed:
+  libicu-60.3-2.el8_1.x86_64 postgresql14-14.17-1PGDG.rhel8.x86_64 postgresql14-libs-14.17-1PGDG.rhel8.x86_64 postgresql14-server-14.17-1PGDG.rhel8.x86_64
+
+Complete!
+[postgres@rajesh-a01 yum.repos.d]$
+[postgres@rajesh-a01 yum.repos.d]$ sudo /usr/pgsql-14/bin/postgresql-14-setup initdb
+Initializing database ... OK
+
+[postgres@rajesh-a01 yum.repos.d]$ sudo systemctl enable postgresql-14
+Created symlink /etc/systemd/system/multi-user.target.wants/postgresql-14.service → /usr/lib/systemd/system/postgresql-14.service.
+[postgres@rajesh-a01 yum.repos.d]$
+[postgres@rajesh-a01 yum.repos.d]$ sudo systemctl start postgresql-14
+[postgres@rajesh-a01 yum.repos.d]$
+[postgres@rajesh-a01 yum.repos.d]$ sudo systemctl status postgresql-14
+● postgresql-14.service - PostgreSQL 14 database server
+   Loaded: loaded (/usr/lib/systemd/system/postgresql-14.service; enabled; vendor preset: disabled)
+   Active: active (running) since Sun 2025-04-06 17:54:02 UTC; 6s ago
+     Docs: https://www.postgresql.org/docs/14/static/
+  Process: 18626 ExecStartPre=/usr/pgsql-14/bin/postgresql-14-check-db-dir ${PGDATA} (code=exited, status=0/SUCCESS)
+ Main PID: 18632 (postmaster)
+    Tasks: 8 (limit: 11893)
+   Memory: 16.8M
+   CGroup: /system.slice/postgresql-14.service
+           ├─18632 /usr/pgsql-14/bin/postmaster -D /var/lib/pgsql/14/data/
+           ├─18633 postgres: logger
+           ├─18635 postgres: checkpointer
+           ├─18636 postgres: background writer
+           ├─18637 postgres: walwriter
+           ├─18638 postgres: autovacuum launcher
+           ├─18639 postgres: stats collector
+           └─18640 postgres: logical replication launcher
+
+Apr 06 17:54:01 rajesh-a01 systemd[1]: Starting PostgreSQL 14 database server...
+Apr 06 17:54:02 rajesh-a01 postmaster[18632]: 2025-04-06 17:54:02.071 UTC [18632] LOG:  redirecting log output to logging collector process
+Apr 06 17:54:02 rajesh-a01 postmaster[18632]: 2025-04-06 17:54:02.071 UTC [18632] HINT:  Future log output will appear in directory "log".
+Apr 06 17:54:02 rajesh-a01 systemd[1]: Started PostgreSQL 14 database server.
+[postgres@rajesh-a01 yum.repos.d]$
+[postgres@rajesh-a01 yum.repos.d]$
+[postgres@rajesh-a01 yum.repos.d]$
+[postgres@rajesh-a01 yum.repos.d]$ cd
+[postgres@rajesh-a01 ~]$
+[postgres@rajesh-a01 ~]$
+[postgres@rajesh-a01 ~]$ psql
+psql (14.17)
+Type "help" for help.
+
+postgres=#
+
+[postgres@rajesh-a01 ~]$ ps -ef | grep postgres
+root        1176     836  0 15:00 ?        00:00:00 sshd: postgres [priv]
+postgres    1182       1  0 15:00 ?        00:00:00 /usr/lib/systemd/systemd --user
+postgres    1185    1182  0 15:00 ?        00:00:00 (sd-pam)
+postgres    1191    1176  0 15:00 ?        00:00:00 sshd: postgres@pts/0
+postgres    1192    1191  0 15:00 pts/0    00:00:00 -bash
+root       17643    6231  0 17:41 pts/0    00:00:00 su - postgres
+postgres   17644   17643  0 17:41 pts/0    00:00:00 -bash
+postgres   18632       1  0 17:54 ?        00:00:00 /usr/pgsql-14/bin/postmaster -D /var/lib/pgsql/14/data/
+postgres   18633   18632  0 17:54 ?        00:00:00 postgres: logger
+postgres   18635   18632  0 17:54 ?        00:00:00 postgres: checkpointer
+postgres   18636   18632  0 17:54 ?        00:00:00 postgres: background writer
+postgres   18637   18632  0 17:54 ?        00:00:00 postgres: walwriter
+postgres   18638   18632  0 17:54 ?        00:00:00 postgres: autovacuum launcher
+postgres   18639   18632  0 17:54 ?        00:00:00 postgres: stats collector
+postgres   18640   18632  0 17:54 ?        00:00:00 postgres: logical replication launcher
+postgres   18683   17644  0 17:54 pts/0    00:00:00 ps -ef
+postgres   18684   17644  0 17:54 pts/0    00:00:00 grep --color=auto postgres
+
+

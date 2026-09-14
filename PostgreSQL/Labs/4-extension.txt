@@ -1,0 +1,179 @@
+=================================================================
+-------Source Code
+[postgres@rajesh-a01 ~]$ /usr/local/pgsql/bin/psql
+psql (15.2)
+Type "help" for help.
+
+postgres=# create extension pg_buffercache;
+ERROR:  extension "pg_buffercache" is not available
+DETAIL:  Could not open extension control file "/usr/local/pgsql/share/extension/pg_buffercache.control": No such file or directory.
+HINT:  The extension must first be installed on the system where PostgreSQL is running.
+postgres=#
+postgres=#
+postgres=# \q
+[postgres@rajesh-a01 ~]$ sudo su -
+Last login: Sun Apr  6 18:23:11 UTC 2025 on pts/0
+[root@rajesh-a01 ~]$ cd postgresql-15.2
+[root@rajesh-a01 postgresql-15.2]$ ls -lrt
+total 1268
+-rw-r--r--  1 1107 1107   1213 Feb  6  2023 README
+-rw-r--r--  1 1107 1107   1875 Feb  6  2023 Makefile
+-rw-r--r--  1 1107 1107    277 Feb  6  2023 HISTORY
+-rw-r--r--  1 1107 1107   4264 Feb  6  2023 GNUmakefile.in
+-rw-r--r--  1 1107 1107   1192 Feb  6  2023 COPYRIGHT
+-rw-r--r--  1 1107 1107  89258 Feb  6  2023 configure.ac
+-rwxr-xr-x  1 1107 1107 601519 Feb  6  2023 configure
+-rw-r--r--  1 1107 1107    397 Feb  6  2023 aclocal.m4
+drwxrwxrwx 61 1107 1107   4096 Feb  6  2023 contrib
+drwxrwxrwx  2 1107 1107   4096 Feb  6  2023 config
+drwxrwxrwx  3 1107 1107     87 Feb  6  2023 doc
+-rw-r--r--  1 1107 1107  63842 Feb  6  2023 INSTALL
+-rwxr-xr-x  1 root root  40198 Apr  6 17:33 config.status
+-rw-r--r--  1 root root   4264 Apr  6 17:33 GNUmakefile
+drwxrwxrwx 16 1107 1107   4096 Apr  6 17:33 src
+-rw-r--r--  1 root root 446669 Apr  6 17:33 config.log
+[root@rajesh-a01 postgresql-15.2]$
+[root@rajesh-a01 postgresql-15.2]$ cd contrib
+[root@rajesh-a01 contrib]$ make
+[root@rajesh-a01 contrib]$ make install
+[root@rajesh-a01 contrib]$ su - postgres
+[postgres@rajesh-a01 ~]$ /usr/local/pgsql/bin/psql
+psql (15.2)
+Type "help" for help.
+
+postgres=# create extension pg_buffercache;
+CREATE EXTENSION
+postgres=#
+
+[postgres@rajesh-a01 ~]$ /usr/local/pgsql/bin/pg_ctl -D /u01/pgsql/15 stop
+waiting for server to shut down.... done
+server stopped
+
+=======================================
+YUM---------------------
+[postgres@rajesh-a01 ~]$
+[postgres@rajesh-a01 ~]$ sudo sudo systemctl status postgresql-14
+● postgresql-14.service - PostgreSQL 14 database server
+   Loaded: loaded (/usr/lib/systemd/system/postgresql-14.service; enabled; vendor preset: disabled)
+   Active: inactive (dead) since Sun 2025-04-06 17:58:51 UTC; 43min ago
+     Docs: https://www.postgresql.org/docs/14/static/
+ Main PID: 18632 (code=exited, status=0/SUCCESS)
+
+Apr 06 17:54:01 rajesh-a01 systemd[1]: Starting PostgreSQL 14 database server...
+Apr 06 17:54:02 rajesh-a01 postmaster[18632]: 2025-04-06 17:54:02.071 UTC [18632] LOG:  redirecting log output to logging collector process
+Apr 06 17:54:02 rajesh-a01 postmaster[18632]: 2025-04-06 17:54:02.071 UTC [18632] HINT:  Future log output will appear in directory "log".
+Apr 06 17:54:02 rajesh-a01 systemd[1]: Started PostgreSQL 14 database server.
+Apr 06 17:58:51 rajesh-a01 systemd[1]: postgresql-14.service: Killing process 18633 (postmaster) with signal SIGKILL.
+Apr 06 17:58:51 rajesh-a01 systemd[1]: postgresql-14.service: Succeeded.
+[postgres@rajesh-a01 ~]$
+[postgres@rajesh-a01 ~]$
+[postgres@rajesh-a01 ~]$ sudo sudo systemctl start  postgresql-14
+[postgres@rajesh-a01 ~]$
+[postgres@rajesh-a01 ~]$ sudo sudo systemctl statust  postgresql-14
+Unknown operation statust.
+[postgres@rajesh-a01 ~]$
+[postgres@rajesh-a01 ~]$
+[postgres@rajesh-a01 ~]$ sudo sudo systemctl status  postgresql-14
+● postgresql-14.service - PostgreSQL 14 database server
+   Loaded: loaded (/usr/lib/systemd/system/postgresql-14.service; enabled; vendor preset: disabled)
+   Active: active (running) since Sun 2025-04-06 18:42:38 UTC; 13s ago
+     Docs: https://www.postgresql.org/docs/14/static/
+  Process: 61980 ExecStartPre=/usr/pgsql-14/bin/postgresql-14-check-db-dir ${PGDATA} (code=exited, status=0/SUCCESS)
+ Main PID: 61985 (postmaster)
+    Tasks: 8 (limit: 11893)
+   Memory: 25.2M
+   CGroup: /system.slice/postgresql-14.service
+           ├─61985 /usr/pgsql-14/bin/postmaster -D /var/lib/pgsql/14/data/
+           ├─61987 postgres: logger
+           ├─61989 postgres: checkpointer
+           ├─61990 postgres: background writer
+           ├─61991 postgres: walwriter
+           ├─61992 postgres: autovacuum launcher
+           ├─61993 postgres: stats collector
+           └─61994 postgres: logical replication launcher
+
+Apr 06 18:42:38 rajesh-a01 systemd[1]: Starting PostgreSQL 14 database server...
+Apr 06 18:42:38 rajesh-a01 postmaster[61985]: 2025-04-06 18:42:38.433 UTC [61985] LOG:  redirecting log output to logging collector process
+Apr 06 18:42:38 rajesh-a01 postmaster[61985]: 2025-04-06 18:42:38.433 UTC [61985] HINT:  Future log output will appear in directory "log".
+Apr 06 18:42:38 rajesh-a01 systemd[1]: Started PostgreSQL 14 database server.
+[postgres@rajesh-a01 ~]$
+[postgres@rajesh-a01 ~]$
+[postgres@rajesh-a01 ~]$ sudo yum install postgresql14-contrib
+EL_8_Catweazle                                                                                                               153 kB/s | 3.0 kB     00:00
+EL_8_aws_cwagent                                                                                                             181 kB/s | 3.0 kB     00:00
+EL_8_fds_influx_observability-rpm                                                                                             85 kB/s | 1.5 kB     00:00
+EL_8_internal_fds_aws_tools                                                                                                   61 kB/s | 3.0 kB     00:00
+Sputnik_IPA_CRL                                                                                                              195 kB/s | 3.0 kB     00:00
+Dependencies resolved.
+=============================================================================================================================================================
+ Package                                      Architecture                   Version                                    Repository                      Size
+=============================================================================================================================================================
+Installing:
+ postgresql14-contrib                         x86_64                         14.17-1PGDG.rhel8                          pgdg14                         739 k
+
+Transaction Summary
+=============================================================================================================================================================
+Install  1 Package
+
+Total download size: 739 k
+Installed size: 2.5 M
+Is this ok [y/N]: y
+Downloading Packages:
+postgresql14-contrib-14.17-1PGDG.rhel8.x86_64.rpm                                                                            883 kB/s | 739 kB     00:00
+-------------------------------------------------------------------------------------------------------------------------------------------------------------
+Total                                                                                                                        880 kB/s | 739 kB     00:00
+Running transaction check
+Transaction check succeeded.
+Running transaction test
+Transaction test succeeded.
+Running transaction
+  Preparing        :                                                                                                                                     1/1
+  Installing       : postgresql14-contrib-14.17-1PGDG.rhel8.x86_64                                                                                       1/1
+  Running scriptlet: postgresql14-contrib-14.17-1PGDG.rhel8.x86_64                                                                                       1/1
+  Verifying        : postgresql14-contrib-14.17-1PGDG.rhel8.x86_64                                                                                       1/1
+
+Installed:
+  postgresql14-contrib-14.17-1PGDG.rhel8.x86_64
+
+Complete!
+[postgres@rajesh-a01 ~]$
+[postgres@rajesh-a01 ~]$ ps -ef | grep postgres
+postgres   61890   61889  0 18:41 pts/0    00:00:00 -bash
+postgres   61985       1  0 18:42 ?        00:00:00 /usr/pgsql-14/bin/postmaster -D /var/lib/pgsql/14/data/
+postgres   61987   61985  0 18:42 ?        00:00:00 postgres: logger
+postgres   61989   61985  0 18:42 ?        00:00:00 postgres: checkpointer
+postgres   61990   61985  0 18:42 ?        00:00:00 postgres: background writer
+postgres   61991   61985  0 18:42 ?        00:00:00 postgres: walwriter
+postgres   61992   61985  0 18:42 ?        00:00:00 postgres: autovacuum launcher
+postgres   61993   61985  0 18:42 ?        00:00:00 postgres: stats collector
+postgres   61994   61985  0 18:42 ?        00:00:00 postgres: logical replication launcher
+postgres   62092   61890  0 18:43 pts/0    00:00:00 ps -ef
+postgres   62093   61890  0 18:43 pts/0    00:00:00 grep --color=auto postgres
+[postgres@rajesh-a01 ~]$
+[postgres@rajesh-a01 ~]$ /usr/pgsql-14/bin/psql
+psql (14.17)
+Type "help" for help.
+
+postgres=# create extension pg_buffercache;
+CREATE EXTENSION
+postgres=#
+
+
+
+=================================================================
+-------RPM
+
+[root@rajesh-a01 rpm]$ rpm -ivh postgresql15-contrib-15.10-1PGDG.rhel8.x86_64.rpm
+Verifying...                          ################################# [100%]
+Preparing...                          ################################# [100%]
+        package postgresql15-contrib-15.10-1PGDG.rhel8.x86_64 is already installed
+[root@rajesh-a01 rpm]$
+[root@rajesh-a01 rpm]$
+[postgres@rajesh-a01 15]$ /usr/pgsql-15/bin/psql
+psql (15.10)
+Type "help" for help.
+
+postgres=#
+postgres=# create extension pg_buffercache;
+CREATE EXTENSION
+postgres=#
