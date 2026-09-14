@@ -1,0 +1,17 @@
+Thank you for giving me this opportunity to introduce myself.
+
+My name is Rajesh, and I have around 10 years of experience in the IT industry, with approximately 7 years of hands-on experience in PostgreSQL database administration as my primary skill. I also have a strong background in Oracle, AWS cloud technologies, database migrations, major version uqgrades and automation.
+
+I started my career in 2015 as an Oracle DBA. During my initial two years, I worked on database monitoring and day-to-day administration activities such as tablespace management, space management, and table-level export and import. Later, I got an opportunity to work on PostgreSQL, which helped me build my interest and expertise in the database administration domain.
+
+I then joined TCS, where I worked for around three years on PostgreSQL database administration. My responsibilities included end-to-end on-premises PostgreSQL infrastructure building, installation, configuration, maintenance, and high availability using streaming replication. I also contributed significantly to an Oracle-to-PostgreSQL migration project, which gave me valuable hands-on experience in database migration planning, execution, and troubleshooting.
+
+After that, I joined FactSet Systems, where I gained extensive experience in AWS cloud technologies and large-scale database operations. One of my key responsibilities was supporting approximately 2,000 database instances. I worked on SQL Server-to-PostgreSQL migrations using AWS DMS and AWS SCT, along with PostgreSQL administration in cloud environments.
+
+During my time at FactSet, I developed strong skills in Terraform, Git, infrastructure-as-code pipelines, Python scripting, and Foglight monitoring. I also worked on automation and cost optimization initiatives, including older snapshot cleanup, instance rightsizing, I/O-Optimized configuration, major version upgrades, and cloud-to-on-premises migration activities.
+
+Currently, I am working at JPMC as a Software Engineer III, primarily focusing on PostgreSQL and AWS. My key responsibilities include PostgreSQL database infrastructure provisioning, administration, high availability using Aurora Global Database, and maintaining security and compliance of database resources.
+
+In my current role, I have worked on major version upgrades, data loading using the aws_s3 extension, failover automation, long-running transaction monitoring, and performance troubleshooting after migrations. I have also worked on table partitioning using pg_partman and improving database operational reliability through automation.
+
+Overall, my experience has given me a strong combination of PostgreSQL database administration, cloud infrastructure, migration, automation, and production troubleshooting skills. I am now looking for an opportunity where I can take more ownership of PostgreSQL architecture, high availability, performance tuning, and automation, and contribute to challenging database engineering projects.
