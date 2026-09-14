@@ -1,0 +1,66 @@
+Tools (psql)
+------------
+[postgres@lab01 bin]$ psql --help
+psql is the PostgreSQL interactive terminal.
+
+[postgres@lab01 bin]$ psql -U postgres -d postgres -h 192.168.66.148 -p 5432 -W
+Password:
+psql (13.10)
+Type "help" for help.
+
+postgres=#
+
+-> show all;
+
+-> postgres=# show work_mem;
+ work_mem
+----------
+ 52MB
+(1 row)
+
+-> postgres=# select user;
+   user
+----------
+ postgres
+(1 row)
+
+-> postgres=# select current_database();
+ current_database
+------------------
+ postgres
+(1 row)
+
+-> postgres=# \c template1
+Password:
+You are now connected to database "template1" as user "postgres".
+template1=#
+
+-> template1=# \c - a
+Password for user a:
+You are now connected to database "template1" as user "a".
+template1=>
+
+-> postgres=# \?  ###Query related help commands
+
+-> \set           #view default psql settings
+
+[postgres@lab01 bin]$ psql -U a -d template1
+psql (13.10)
+Type "help" for help.
+
+template1=> -> connected with normal user
+template1=# -> connected with superuser
+template1-#  -> command executed in previous has not completed.
+
+#### practice psqlrc
+#### change autocommit value and see what is happening (at both psqlrc level and session level)
+
+[postgres@lab01 ~]$ psql -c "create table emp(id int, sal int)";
+[postgres@lab01 ~]$ psql -f emp.sql;
+
+postgres => \h (for sql command help)
+
+############ IMPORTANT
+1. <tool_name> --help (all options)
+2. postgresql.conf (all parameters)
+3. https://neon.tech/postgresql/postgresql-tutorial/postgresql-left-join

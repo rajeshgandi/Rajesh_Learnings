@@ -1,0 +1,45 @@
+ACID properties
+
+RDMS compliant satisfy:
+- SQL select * from emp;
+- ACID
+
+Atomicity - Irrespective of no.of statements ->	treat them as unique
+	
+	begin;
+	update emp set sal=sal-200 where id=1;
+	update emp set sal=sal+200 where id=2;
+	end;
+		
+Consistency - Before and after your transaction, database should be consitent
+
+Isolation - Read only committed information, Reads/Writes should not interfere each other, No two writes should happen at same time.
+
+	MVCC - Multi version concurrency control
+	
+Durability - At any cost my data(committed) should be safe
+
+postgres=# -- super user . auto-commit on
+postgres=> -- normal user . auto-commit on
+postgres=* -- transaction mode . auto-commit off
+
+1) Follow begin and end
+2) Disable autocommit*
+3) ON_ERROR_STOP
+
+Autovacuum will not delete dead tuples if other session is reading past image data
+
+Lab setup
+
+- Install vmware wordstation (Next - Next - Finish)
+- Download lab01.zip to D:/drive (pref - separate folder)
+- Extract lab01.zip to have lab01 folder, remove .lck folder from lab01.
+- Right click on .vmx file and open with vmware workstation
+
+Clone the virtual machine?
+
+- copy lab01 to lab02
+- open vmx file with notepad and change display name {displayName = "lab02"} and save
+- open vmx file with vmware workstation
+- Select "I copied it" when asked
+- To change machine name - "hostnamectl set-hostname lab02"

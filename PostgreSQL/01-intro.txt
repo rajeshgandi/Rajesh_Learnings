@@ -1,0 +1,25 @@
+Why PostgreSQL?
+  - Open source
+  
+  - Wide variety of options (in terms of features)
+  Community Version  - Opensource
+  EDB -> PPAS Postgres Plus Advanced Server - oracle compatible
+  Amazon -> Aurora - optimized for cloud
+  GCP -> Alloy DB
+  Greenplum -> GreenplumDB (OLAP)
+  Cockroach DB
+  Yugabyte DB]
+  Citus DB
+  Scalegrid
+  Postgres Pro
+  
+  Many PostgreSQL derived products
+  https://www.postgresql.org/support/professional_support/asia/
+  dataegret - give suppot
+  
+  - Highly Extensive
+    Install Extensions
+    Third part tools : pgBackRest == BART in EDB
+
+
+https://www.postgresql.org/list/pgsql-admin/

@@ -1,0 +1,58 @@
+postgres: checkpointer  -- wiites info from shared buffer to datafile
+						-- updates control file about latest txid
+
+#checkpoint_timeout = 5min              # range 30s-1d
+#checkpoint_completion_target = 0.9     # checkpoint target duration, 0.0 - 1.0
+#checkpoint_flush_after = 256kB         # measured in pages, 0 disables
+#checkpoint_warning = 30s               # 0 disables
+#log_checkpoints = on
+
+
+checkpoint_timeout: checkpointer wakes up every 5min. and check if there is any info which is there in  shared buffers is copied into datafiles or not.
+
+checkpoint_completion_target - 0.9 : Please take 90% of your time of 5min time to take copy the content from shared buffers to datafiles
+(5 bricks in shared buffer. 1min of time. can carry 5 bricks at a time. But will ask take 5min of time. He will carry only 1 brick at a time. Less I/O)
+If there is cpu overhead., increase checkpoint_completion_target.
+
+checkpoint_warning : If checpoint taking more time than specified 30sec., then log it into alert log
+
+checkpointer makes sure that data is there in the datafile.
+
+#bgwriter_delay = 200ms                 # 10-10000ms between rounds
+#bgwriter_lru_maxpages = 100            # max buffers written/round, 0 disables
+#bgwriter_lru_multiplier = 2.0          # 0-10.0 multiplier on buffers scanned/round
+#bgwriter_flush_after = 512kB           # measured in pages, 0 disables
+
+postgres: background writer: Writes information  from shared buffer to datafile
+
+BGWR works 24/7. BGWR check info in shared buffers., if there are any dirt buffers bring it and copy to datafile. and then sleep for 200ms and go again to check. MAx it can carry upto 100pages. If there is no available space in shared buffers., then it will multiply for bring pages... 100*2 i.e., 200 pages at a time,
+
+In reality it hardly have any content to write from shared buffer to datafiles. End of the day, it will update control file that txids in wal file and datafile sections
+
+BWWR: 09:59:59:800
+CKPT: 10:00:00:000
+
+In between this time., if any modification happened., then checkpoint will write the content to datafile., as bgwr hardly sleeps for only 200ms.
+
+Local Memory:
+work_mem : Sorting. order by clause
+maintenamce_work_mem : MOre this value, faster the autovacuuming
+temp_buffers: creates the temp table. Upon the next session, that temp table will not be present
+
+==================
+
+#debug_print_parse = off
+#debug_print_rewritten = off
+#debug_print_plan = off
+#debug_pretty_print = on
+
+syntax and schemantic ==> parsing
+rewrite its query its own language.. split * into tokens ==> Rewrite
+Optimizer choose the best plan ==> plan
+
+Every tiem you execute a query., it will undergo all the three steps. starting from parsing
+NOt recommended to enable these three in real time
+
+
+
+

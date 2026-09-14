@@ -1,0 +1,158 @@
+Database, Schema and Users
+Ref: https://www.postgresql.org/docs/current/ddl-priv.html
+Dictionary views
+https://www.postgresql.org/docs/current/information-schema.html
+
+
+show search_path;
+1. $user
+2. public
+
+CREATE USER ntms_dev WITH PASSWORD 'ntms_dev';
+CREATE DATABASE ntms_dev WITH OWNER ntms_dev ENCODING 'UTF8';
+CREATE SCHEMA ntms_dev;
+
+sed -i 's/old/new/g' dump.sql
+
+Create readonly user
+--------------------
+CREATE USER ntms_read WITH PASSWORD 'ntms_read';			          		use psql
+GRANT CONNECT ON DATABASE ntms_live TO ntms_read;                   use ntms_final  
+GRANT USAGE ON SCHEMA ntms_final TO ntms_read;                      use ntms_final 
+GRANT SELECT ON ALL TABLES IN SCHEMA ntms_final TO ntms_read;       use ntms_final
+ALTER DEFAULT PRIVILEGES IN SCHEMA ntms_final                          
+GRANT SELECT ON TABLES TO ntms_read;                                use ntms_final
+
+alter user ntms_read set search_path ='ntms_final',public;			    use ntms_read
+
+select rolname, rolconfig from pg_roles;   --> will show search_paths of all roles/users
+
+Roles
+-----
+hdfc_user -> superuser
+
+two roles - hdfc_dba, hdfc_dev
+4 users - hdfc_dev1, hdfc_dev2, hdfc_dba1, hdfc_dba2
+assign insert, delete, update privileges to hdfc_dba role
+assign select  privileges to hdfc_dev role
+add hdfc_dev1, hdfc_dev2 to hdfc_dev 
+add hdfc_dba1, hdfc_dba2 to hdfc_dba
+audit their activity.
+
+#create role
+postgres=# create role hdfc_dev;
+CREATE ROLE
+postgres=# create role hdfc_dba;
+CREATE ROLE
+postgres=#
+
+#create users
+postgres=# create user hdfc_dev1 with password 'hdfc_dev1';
+CREATE ROLE
+postgres=# create user hdfc_dev2 with password 'hdfc_dev2';
+CREATE ROLE
+postgres=# create user hdfc_dba1 with password 'hdfc_dba1';
+CREATE ROLE
+postgres=# create user hdfc_dba2 with password 'hdfc_dba2';
+CREATE ROLE
+postgres=#
+
+postgres=# \q
+[postgres@lab01 ~]$ psql -U hdfc_user -d hdfc_db
+psql (15.3)
+Type "help" for help.
+
+
+#assign privileges to role
+hdfc_db=> grant connect on database hdfc_db to hdfc_dev;
+GRANT
+hdfc_db=> grant usage on schema hdfc_user to hdfc_dev;
+GRANT
+hdfc_db=> grant select on all tables in schema hdfc_user to  hdfc_dev;
+GRANT
+hdfc_db=>
+
+#assign privileges to role
+hdfc_db=> grant connect on database hdfc_db to hdfc_dba;
+GRANT
+hdfc_db=> grant usage on schema hdfc_user to hdfc_dba;
+GRANT
+hdfc_db=> grant insert, update, delete  on all tables in schema hdfc_user to  hdfc_dba;
+GRANT
+hdfc_db=>
+
+#assign role to users
+hdfc_db=> grant hdfc_dba to hdfc_dba1;
+ERROR:  must have admin option on role "hdfc_dba"
+hdfc_db=> \c - postgres
+You are now connected to database "hdfc_db" as user "postgres".
+hdfc_db=# grant hdfc_dba to hdfc_dba1;
+GRANT ROLE
+hdfc_db=# grant hdfc_dba to hdfc_dba2;
+GRANT ROLE
+hdfc_db=# grant hdfc_dev to hdfc_dev1;
+GRANT ROLE
+hdfc_db=# grant hdfc_dev to hdfc_dev2;
+GRANT ROLE
+hdfc_db=#
+
+
+#audit
+postgres=# alter user hdfc_dev1 set log_statement='all';
+ALTER ROLE
+postgres=# alter user hdfc_dev2 set log_statement='all';
+ALTER ROLE
+postgres=# alter user hdfc_dba1 set log_statement='all';
+ALTER ROLE
+postgres=# alter user hdfc_dba2 set log_statement='all';
+ALTER ROLE
+postgres=#
+
+#modify below settings in postgresql.conf file and reload cluster
+log_line_prefix = '%t [%p]: [%l-1] user=%u,db=%d,app=%a,client=%h '
+
+#set search paths
+
+hdfc_db=#
+hdfc_db=# alter user hdfc_dev1 set search_path=hdfc_user;
+ALTER ROLE
+hdfc_db=# alter user hdfc_dev2 set search_path=hdfc_user;
+ALTER ROLE
+hdfc_db=# alter user hdfc_dba1 set search_path=hdfc_user;
+ALTER ROLE
+hdfc_db=# alter user hdfc_dba2 set search_path=hdfc_user;
+ALTER ROLE
+hdfc_db=#
+
+
+Example.,
+[postgres@lab01 15]$ psql -U hdfc_dba1 -d hdfc_db
+psql (15.3)
+Type "help" for help.
+
+hdfc_db=>
+hdfc_db=>
+hdfc_db=>
+hdfc_db=> select * from emp;
+ id | sal
+----+-----
+  1 | 100
+(1 row)
+
+hdfc_db=> delete from emp;
+DELETE 1
+hdfc_db=>
+
+2023-05-23 08:36:02 IST [21048]: [5-1] user=hdfc_dba1,db=hdfc_db,app=psql,client=[local] LOG:  statement: delete from emp;
+
+
+Try this
+---------
+hdfc_db=# alter user hdfc_dev1 in database hdfc_db set log_statement='all';
+ALTER ROLE
+hdfc_db=#
+
+
+hdfc_db=# select * from pg_db_role_setting;
+
+

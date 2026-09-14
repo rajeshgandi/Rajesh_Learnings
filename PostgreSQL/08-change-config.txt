@@ -1,0 +1,60 @@
+change configuration value for any parameter
+---------------------------------------------
+work_mem
+--------
+1. change it in postgresql.conf 
+-> reload : select pg_reload_conf();
+
+2. Run alter system command
+postgres=# alter system set work_mem='12MB';
+ALTER SYSTEM
+-> reload
+
+will write this in postgresql.auto.conf
+
+3 ALTER USER
+alter user a set work_mem='26MB';
+-> reload
+
+4. ALTER DATABASE
+postgres=# alter database postgres set work_mem='52MB';
+ALTER DATABASE
+postgres=#
+-> reload
+
+
+ select * from pg_db_role_setting;
+
+
+5. postgres=# alter user a in database postgres set work_mem='100MB';
+ALTER ROLE
+postgres=#
+-> reload
+
+6. at session level
+postgres=> set work_mem='200MB';
+SET
+postgres=> show work_mem;
+ work_mem
+----------
+ 200MB
+(1 row)
+
+7. at command level
+postgres=> begin;
+BEGIN
+postgres=*> set work_mem='400MB';
+SET
+postgres=*>  show work_mem;
+ work_mem
+----------
+ 400MB
+(1 row)
+
+=> Reset postgresql.auto.conf
+postgres=# alter system reset all;
+ALTER SYSTEM
+postgres=# \q
+
+
+

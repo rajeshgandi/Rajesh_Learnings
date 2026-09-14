@@ -1,0 +1,231 @@
+DATA FILE:
+-----------
+postgres=# create table city (name varchar(100));
+CREATE TABLE
+postgres=# select pg_relation_filepath('city');
+ pg_relation_filepath
+----------------------
+ base/5/16431
+(1 row)
+
+[postgres@rajesh-a01 ~]$ cd /u01/pgsql/15
+[postgres@rajesh-a01 15]$ cd base/5/
+[postgres@rajesh-a01 5]$ ls -lrt *16431*
+-rw------- 1 postgres postgres 0 Apr 19 17:52 16431
+[postgres@rajesh-a01 5]$
+[postgres@rajesh-a01 5]$ psql
+psql (15.10)
+Type "help" for help.
+
+postgres=# insert into city values ('CHENNAI');
+INSERT 0 1
+postgres=#
+postgres=# \q
+[postgres@rajesh-a01 5]$
+[postgres@rajesh-a01 5]$ od -a 16431
+0000000 nul nul nul nul nul nul nul nul nul nul nul nul nul nul nul nul
+*
+0020000
+[postgres@rajesh-a01 5]$ psql -c "checkpoint;"
+CHECKPOINT
+[postgres@rajesh-a01 5]$
+[postgres@rajesh-a01 5]$ od -a 16431
+0000000 nul nul nul nul   H   U   ] soh nul nul nul nul  fs nul   `  us
+0000020 nul  sp eot  sp nul nul nul nul   `  us   @ nul nul nul nul nul
+0000040 nul nul nul nul nul nul nul nul nul nul nul nul nul nul nul nul
+*
+0017740   h stx nul nul nul nul nul nul nul nul nul nul nul nul nul nul
+0017760 soh nul soh nul stx  bs can nul dc1   C   H   E   N   N   A   I
+0020000
+
+[postgres@rajesh-a01 5]$ psql -c "insert into city values ('MUMBAI');"
+INSERT 0 1
+[postgres@rajesh-a01 5]$ od -a 16431
+0000000 nul nul nul nul   H   U   ] soh nul nul nul nul  fs nul   `  us
+0000020 nul  sp eot  sp nul nul nul nul   `  us   @ nul nul nul nul nul
+0000040 nul nul nul nul nul nul nul nul nul nul nul nul nul nul nul nul
+*
+0017740   h stx nul nul nul nul nul nul nul nul nul nul nul nul nul nul
+0017760 soh nul soh nul stx  bs can nul dc1   C   H   E   N   N   A   I
+0020000
+[postgres@rajesh-a01 5]$
+[postgres@rajesh-a01 5]$ psql -c "checkpoint;"
+CHECKPOINT
+[postgres@rajesh-a01 5]$ od -a 16431
+0000000 nul nul nul nul dle   X   ] soh nul nul nul nul  sp nul   @  us
+0000020 nul  sp eot  sp nul nul nul nul   `  us   @ nul   @  us   > nul
+0000040 nul nul nul nul nul nul nul nul nul nul nul nul nul nul nul nul
+*
+0017700   i stx nul nul nul nul nul nul nul nul nul nul nul nul nul nul
+0017720 stx nul soh nul stx  bs can nul  si   M   U   M   B   A   I nul
+0017740   h stx nul nul nul nul nul nul nul nul nul nul nul nul nul nul
+0017760 soh nul soh nul stx  bs can nul dc1   C   H   E   N   N   A   I
+0020000
+
+[postgres@rajesh-a01 5]$ psql -c "update city set name='DELHI' where name='CHENNAI';"
+UPDATE 1
+[postgres@rajesh-a01 5]$
+[postgres@rajesh-a01 5]$ psql -c "checkpoint;"
+CHECKPOINT
+[postgres@rajesh-a01 5]$ od -a 16431
+0000000 nul nul nul nul  sp   Z   ] soh nul nul nul nul   $ nul  sp  us
+0000020 nul  sp eot  sp   j stx nul nul   `  us   @ nul   @  us   > nul
+0000040  sp  us   < nul nul nul nul nul nul nul nul nul nul nul nul nul
+0000060 nul nul nul nul nul nul nul nul nul nul nul nul nul nul nul nul
+*
+0017640   j stx nul nul nul nul nul nul nul nul nul nul nul nul nul nul
+0017660 etx nul soh nul stx   ( can nul  cr   D   E   L   H   I nul nul
+0017700   i stx nul nul nul nul nul nul nul nul nul nul nul nul nul nul
+0017720 stx nul soh nul stx  ht can nul  si   M   U   M   B   A   I nul
+0017740   h stx nul nul   j stx nul nul nul nul nul nul nul nul nul nul
+0017760 etx nul soh   @ stx soh can nul dc1   C   H   E   N   N   A   I
+0020000
+
+[postgres@rajesh-a01 5]$ psql -c "vacuum city;"
+VACUUM
+[postgres@rajesh-a01 5]$ ls -lrt 16431*
+-rw------- 1 postgres postgres  8192 Apr 19 18:00 16431
+-rw------- 1 postgres postgres  8192 Apr 19 18:01 16431_vm
+-rw------- 1 postgres postgres 24576 Apr 19 18:01 16431_fsm
+[postgres@rajesh-a01 5]$ psql -c "insert into city values ('KASHMIR');"
+INSERT 0 1
+[postgres@rajesh-a01 5]$
+[postgres@rajesh-a01 5]$ psql -c "checkpoint;"
+CHECKPOINT
+[postgres@rajesh-a01 5]$
+[postgres@rajesh-a01 5]$ od -a 16431
+0000000 nul nul nul nul   x enq   ^ soh nul nul nul nul   ( nul  sp  us
+0000020 nul  sp eot  sp nul nul nul nul etx nul soh nul   `  us   > nul
+0000040   @  us   < nul  sp  us   @ nul nul nul nul nul nul nul nul nul
+0000060 nul nul nul nul nul nul nul nul nul nul nul nul nul nul nul nul
+*
+0017640   k stx nul nul nul nul nul nul nul nul nul nul nul nul nul nul
+0017660 eot nul soh nul stx  bs can nul dc1   K   A   S   H   M   I   R
+0017700   j stx nul nul nul nul nul nul nul nul nul nul nul nul nul nul
+0017720 etx nul soh nul stx   ) can nul  cr   D   E   L   H   I nul nul
+0017740   i stx nul nul nul nul nul nul nul nul nul nul nul nul nul nul
+0017760 stx nul soh nul stx  ht can nul  si   M   U   M   B   A   I nul
+0020000
+[postgres@rajesh-a01 5]$
+
+==============
+block size is 8kb in a table.
+
+1kb is for header which contain LSN number
+inserts are happening from bottom to top until it reach header
+until it reach 1GB
+then it creates new datafile 16431.1
+
+[postgres@rajesh-a01 5]$
+[postgres@rajesh-a01 5]$ ls -lrt *16431*
+-rw------- 1 postgres postgres      8192 Apr 19 18:08 16431_vm
+-rw------- 1 postgres postgres    245760 Apr 19 18:08 16431_fsm
+-rw------- 1 postgres postgres 912211968 Apr 19 18:08 16431
+[postgres@rajesh-a01 5]$
+[postgres@rajesh-a01 5]$ psql -c "insert into city select * from city;"
+INSERT 0 25165824
+[postgres@rajesh-a01 5]$
+[postgres@rajesh-a01 5]$ ls -lrt *16431*
+-rw------- 1 postgres postgres     466944 Apr 19 18:09 16431_fsm
+-rw------- 1 postgres postgres      24576 Apr 19 18:09 16431_vm
+-rw------- 1 postgres postgres  750673920 Apr 19 18:09 16431.1
+-rw------- 1 postgres postgres 1073741824 Apr 19 18:09 16431
+
+After first vacuum:
+
+VM : Visibility Map : tracks which one is dead tuple, which one is dead tuple.
+FSM: Free Space Map : tracks which position of free space is available in the existing datafile for the new insert/update.
+
+For example., there are 10 blocks 1 to 10., of which only 5,6,7 are dead tuples...
+then VM --> SELECT query will goes to VM and scans for 1 to 4 and 8 to 10. . 
+FSM ---> scans for 5 to 7 blocks attached to it.
+
+VM contains only boolean data... 1 is live tuple, 0 is dead tuple
+pg_visibility extension help to see the content of VM and FSM
+
+CONTROL FILE:
+-------------
+[postgres@rajesh-a01 global]$ pwd
+/u01/pgsql/15/global
+[postgres@rajesh-a01 global]$ /usr/pgsql-15/bin/pg_controldata -D /u01/pgsql/15
+pg_control version number:            1300
+Catalog version number:               202209061
+Database system identifier:           7490273472457905008
+Database cluster state:               in production
+pg_control last modified:             Sat 19 Apr 2025 06:13:18 PM UTC
+Latest checkpoint location:           0/C25D7368
+Latest checkpoint's REDO location:    0/A85A5F50
+Latest checkpoint's REDO WAL file:    0000000100000000000000A8
+Latest checkpoint's TimeLineID:       1
+Latest checkpoint's PrevTimeLineID:   1
+Latest checkpoint's full_page_writes: on
+Latest checkpoint's NextXID:          0:773
+Latest checkpoint's NextOID:          24620
+Latest checkpoint's NextMultiXactId:  1
+Latest checkpoint's NextMultiOffset:  0
+Latest checkpoint's oldestXID:        716
+Latest checkpoint's oldestXID's DB:   1
+Latest checkpoint's oldestActiveXID:  772
+Latest checkpoint's oldestMultiXid:   1
+Latest checkpoint's oldestMulti's DB: 1
+Latest checkpoint's oldestCommitTsXid:0
+Latest checkpoint's newestCommitTsXid:0
+Time of latest checkpoint:            Sat 19 Apr 2025 06:09:32 PM UTC
+Fake LSN counter for unlogged rels:   0/3E8
+Minimum recovery ending location:     0/0
+Min recovery ending loc's timeline:   0
+Backup start location:                0/0
+Backup end location:                  0/0
+End-of-backup record required:        no
+wal_level setting:                    replica
+wal_log_hints setting:                off
+max_connections setting:              100
+max_worker_processes setting:         8
+max_wal_senders setting:              10
+max_prepared_xacts setting:           0
+max_locks_per_xact setting:           64
+track_commit_timestamp setting:       off
+Maximum data alignment:               8
+Database block size:                  8192
+Blocks per segment of large relation: 131072
+WAL block size:                       8192
+Bytes per WAL segment:                16777216
+Maximum length of identifiers:        64
+Maximum columns in an index:          32
+Maximum size of a TOAST chunk:        1996
+Size of a large-object chunk:         2048
+Date/time type storage:               64-bit integers
+Float8 argument passing:              by value
+Data page checksum version:           0
+Mock authentication nonce:            a8d67dcd08f57238c21b24f736a019dbaf7f52f29651fc94fbb491d1424ad9fe
+[postgres@rajesh-a01 global]$
+
+
+
+IMPORTANT:
+Latest checkpoint location:           0/C25D7368
+Latest checkpoint's REDO location:    0/A85A5F50
+Latest checkpoint's REDO WAL file:    0000000100000000000000A8
+
+[postgres@rajesh-a01 global]$ psql -c "checkpoint;"
+CHECKPOINT
+[postgres@rajesh-a01 global]$
+[postgres@rajesh-a01 global]$ /usr/pgsql-15/bin/pg_controldata -D /u01/pgsql/15
+pg_control version number:            1300
+Catalog version number:               202209061
+Database system identifier:           7490273472457905008
+Database cluster state:               in production
+pg_control last modified:             Sat 19 Apr 2025 06:22:05 PM UTC
+Latest checkpoint location:           0/C25D7450
+Latest checkpoint's REDO location:    0/C25D7418
+Latest checkpoint's REDO WAL file:    0000000100000000000000C2
+Time of latest checkpoint:            Sat 19 Apr 2025 06:22:04 PM UTC
+[postgres@rajesh-a01 global]$
+
+
+IMPORTANT:
+Latest checkpoint location:           0/C25D7450
+Latest checkpoint's REDO location:    0/C25D7418
+
+
+

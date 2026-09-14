@@ -1,0 +1,406 @@
+TEST CASE-1: missing walfile
+-------------------------------
+
+[postgres@rajesh-a01 pg_wal]$ /usr/pgsql-15/bin/pg_controldata -D /u01/pgsql/15 | grep 'Latest checkpoint location'
+Latest checkpoint location:           0/CDE4F1D8
+[postgres@rajesh-a01 pg_wal]$
+[postgres@rajesh-a01 pg_wal]$ /usr/pgsql-15/bin/pgbench -i -s 15 postgres
+dropping old tables...
+creating tables...
+generating data (client-side)...
+1500000 of 1500000 tuples (100%) done (elapsed 1.78 s, remaining 0.00 s)
+vacuuming...
+creating primary keys...
+done in 3.33 s (drop tables 0.07 s, create tables 0.02 s, client-side generate 1.85 s, vacuum 0.20 s, primary keys 1.20 s).
+[postgres@rajesh-a01 pg_wal]$
+[postgres@rajesh-a01 pg_wal]$ psql -c "select pg_current_wal_lsn()";
+ pg_current_wal_lsn
+--------------------
+ 0/D96D1B70
+(1 row)
+
+[postgres@rajesh-a01 pg_wal]$
+[postgres@rajesh-a01 pg_wal]$ ls -lrt | tail -15
+-rw------- 1 postgres postgres 16777216 Apr 19 18:09 0000000100000000000000FF
+-rw------- 1 postgres postgres 16777216 Apr 19 18:09 000000010000000100000000
+-rw------- 1 postgres postgres 16777216 Apr 19 18:50 0000000100000000000000CD
+-rw------- 1 postgres postgres 16777216 Apr 19 18:50 0000000100000000000000CE
+-rw------- 1 postgres postgres 16777216 Apr 19 18:50 0000000100000000000000CF
+-rw------- 1 postgres postgres 16777216 Apr 19 18:50 0000000100000000000000D0
+-rw------- 1 postgres postgres 16777216 Apr 19 18:50 0000000100000000000000D1
+-rw------- 1 postgres postgres 16777216 Apr 19 18:50 0000000100000000000000D2
+-rw------- 1 postgres postgres 16777216 Apr 19 18:50 0000000100000000000000D3
+-rw------- 1 postgres postgres 16777216 Apr 19 18:50 0000000100000000000000D4
+-rw------- 1 postgres postgres 16777216 Apr 19 18:50 0000000100000000000000D5
+-rw------- 1 postgres postgres 16777216 Apr 19 18:50 0000000100000000000000D6
+-rw------- 1 postgres postgres 16777216 Apr 19 18:50 0000000100000000000000D7
+-rw------- 1 postgres postgres 16777216 Apr 19 18:50 0000000100000000000000D8
+-rw------- 1 postgres postgres 16777216 Apr 19 18:50 0000000100000000000000D9
+[postgres@rajesh-a01 pg_wal]$
+
+[postgres@rajesh-a01 pg_wal]$ /usr/pgsql-15/bin/pg_controldata -D /u01/pgsql/15 | grep 'Latest checkpoint location'
+Latest checkpoint location:           0/CDE4F1D8
+[postgres@rajesh-a01 pg_wal]$ psql -c "select pg_current_wal_lsn()";
+ pg_current_wal_lsn
+--------------------
+ 0/D96D1BA8
+(1 row)
+
+[postgres@rajesh-a01 pg_wal]$  /usr/pgsql-15/bin/pg_ctl -D /u01/pgsql/15 stop -m immediate
+waiting for server to shut down.... done
+server stopped
+[postgres@rajesh-a01 pg_wal]$
+[postgres@rajesh-a01 pg_wal]$ mv 0000000100000000000000CD ../
+[postgres@rajesh-a01 pg_wal]$
+[postgres@rajesh-a01 pg_wal]$ ls -lrt | tail -15
+-rw------- 1 postgres postgres 16777216 Apr 19 18:09 0000000100000000000000FE
+-rw------- 1 postgres postgres 16777216 Apr 19 18:09 0000000100000000000000FF
+-rw------- 1 postgres postgres 16777216 Apr 19 18:09 000000010000000100000000
+-rw------- 1 postgres postgres 16777216 Apr 19 18:50 0000000100000000000000CE
+-rw------- 1 postgres postgres 16777216 Apr 19 18:50 0000000100000000000000CF
+-rw------- 1 postgres postgres 16777216 Apr 19 18:50 0000000100000000000000D0
+-rw------- 1 postgres postgres 16777216 Apr 19 18:50 0000000100000000000000D1
+-rw------- 1 postgres postgres 16777216 Apr 19 18:50 0000000100000000000000D2
+-rw------- 1 postgres postgres 16777216 Apr 19 18:50 0000000100000000000000D3
+-rw------- 1 postgres postgres 16777216 Apr 19 18:50 0000000100000000000000D4
+-rw------- 1 postgres postgres 16777216 Apr 19 18:50 0000000100000000000000D5
+-rw------- 1 postgres postgres 16777216 Apr 19 18:50 0000000100000000000000D6
+-rw------- 1 postgres postgres 16777216 Apr 19 18:50 0000000100000000000000D7
+-rw------- 1 postgres postgres 16777216 Apr 19 18:50 0000000100000000000000D8
+-rw------- 1 postgres postgres 16777216 Apr 19 18:50 0000000100000000000000D9
+[postgres@rajesh-a01 pg_wal]$
+[postgres@rajesh-a01 pg_wal]$
+[postgres@rajesh-a01 pg_wal]$  /usr/pgsql-15/bin/pg_ctl -D /u01/pgsql/15 start
+waiting for server to start....2025-04-19 18:52:30.889 UTC [75955] LOG:  redirecting log output to logging collector process
+2025-04-19 18:52:30.889 UTC [75955] HINT:  Future log output will appear in directory "log".
+ stopped waiting
+pg_ctl: could not start server
+Examine the log output.
+[postgres@rajesh-a01 pg_wal]$
+
+
+============
+2025-04-19 18:51:49.141 UTC [75600] LOG:  received immediate shutdown request
+2025-04-19 18:51:49.169 UTC [75600] LOG:  database system is shut down
+
+
+
+
+2025-04-19 18:52:30.890 UTC [75955] LOG:  starting PostgreSQL 15.10 on x86_64-pc-linux-gnu, compiled by gcc (GCC) 8.5.0 20210514 (Red Hat 8.5.0-22), 64-bit
+2025-04-19 18:52:30.890 UTC [75955] LOG:  listening on IPv6 address "::1", port 5432
+2025-04-19 18:52:30.890 UTC [75955] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2025-04-19 18:52:30.891 UTC [75955] LOG:  listening on Unix socket "/run/postgresql/.s.PGSQL.5432"
+2025-04-19 18:52:30.892 UTC [75955] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
+2025-04-19 18:52:30.897 UTC [75959] LOG:  database system was interrupted; last known up at 2025-04-19 18:43:21 UTC
+2025-04-19 18:52:30.906 UTC [75959] LOG:  invalid primary checkpoint record
+2025-04-19 18:52:30.907 UTC [75959] PANIC:  could not locate a valid checkpoint record
+2025-04-19 18:52:31.006 UTC [75955] LOG:  startup process (PID 75959) was terminated by signal 6: Aborted
+2025-04-19 18:52:31.006 UTC [75955] LOG:  aborting startup due to startup process failure
+2025-04-19 18:52:31.006 UTC [75955] LOG:  database system is shut down
+
+
+
+=================================
+[postgres@rajesh-a01 pg_wal]$ mv ../0000000100000000000000CD .
+[postgres@rajesh-a01 pg_wal]$
+[postgres@rajesh-a01 pg_wal]$ ls -lrt
+total 868352
+
+[postgres@rajesh-a01 pg_wal]$ ls -lrt | tail -15
+-rw------- 1 postgres postgres 16777216 Apr 19 18:09 0000000100000000000000FF
+-rw------- 1 postgres postgres 16777216 Apr 19 18:09 000000010000000100000000
+-rw------- 1 postgres postgres 16777216 Apr 19 18:50 0000000100000000000000CD
+-rw------- 1 postgres postgres 16777216 Apr 19 18:50 0000000100000000000000CE
+-rw------- 1 postgres postgres 16777216 Apr 19 18:50 0000000100000000000000CF
+-rw------- 1 postgres postgres 16777216 Apr 19 18:50 0000000100000000000000D0
+-rw------- 1 postgres postgres 16777216 Apr 19 18:50 0000000100000000000000D1
+-rw------- 1 postgres postgres 16777216 Apr 19 18:50 0000000100000000000000D2
+-rw------- 1 postgres postgres 16777216 Apr 19 18:50 0000000100000000000000D3
+-rw------- 1 postgres postgres 16777216 Apr 19 18:50 0000000100000000000000D4
+-rw------- 1 postgres postgres 16777216 Apr 19 18:50 0000000100000000000000D5
+-rw------- 1 postgres postgres 16777216 Apr 19 18:50 0000000100000000000000D6
+-rw------- 1 postgres postgres 16777216 Apr 19 18:50 0000000100000000000000D7
+-rw------- 1 postgres postgres 16777216 Apr 19 18:50 0000000100000000000000D8
+-rw------- 1 postgres postgres 16777216 Apr 19 18:50 0000000100000000000000D9
+[postgres@rajesh-a01 pg_wal]$
+
+[postgres@rajesh-a01 pg_wal]$  /usr/pgsql-15/bin/pg_ctl -D /u01/pgsql/15 start
+waiting for server to start....2025-04-19 18:54:37.949 UTC [76056] LOG:  redirecting log output to logging collector process
+2025-04-19 18:54:37.949 UTC [76056] HINT:  Future log output will appear in directory "log".
+. done
+server started
+
+
+2025-04-19 18:54:37.949 UTC [76056] LOG:  starting PostgreSQL 15.10 on x86_64-pc-linux-gnu, compiled by gcc (GCC) 8.5.0 20210514 (Red Hat 8.5.0-22), 64-bit
+2025-04-19 18:54:37.949 UTC [76056] LOG:  listening on IPv6 address "::1", port 5432
+2025-04-19 18:54:37.949 UTC [76056] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2025-04-19 18:54:37.950 UTC [76056] LOG:  listening on Unix socket "/run/postgresql/.s.PGSQL.5432"
+2025-04-19 18:54:37.952 UTC [76056] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
+2025-04-19 18:54:37.955 UTC [76060] LOG:  database system was interrupted; last known up at 2025-04-19 18:43:21 UTC
+2025-04-19 18:54:37.962 UTC [76060] LOG:  database system was not properly shut down; automatic recovery in progress
+2025-04-19 18:54:37.964 UTC [76060] LOG:  redo starts at 0/CDE4F250
+2025-04-19 18:54:38.371 UTC [76060] LOG:  invalid record length at 0/D96D1BA8: wanted 24, got 0
+2025-04-19 18:54:38.371 UTC [76060] LOG:  redo done at 0/D96D1B70 system usage: CPU: user: 0.17 s, system: 0.16 s, elapsed: 0.40 s
+2025-04-19 18:54:38.375 UTC [76058] LOG:  checkpoint starting: end-of-recovery immediate wait
+2025-04-19 18:54:39.221 UTC [76058] LOG:  checkpoint complete: wrote 16379 buffers (100.0%); 0 WAL file(s) added, 12 removed, 0 recycled; write=0.248 s, sync=0.561 s, total=0.848 s; sync files=45, longest=0.554 s, average=0.013 s; distance=188938 kB, estimate=188938 kB
+2025-04-19 18:54:39.235 UTC [76056] LOG:  database system is ready to accept connections
+
+
+==================================
+[postgres@rajesh-a01 pg_wal]$ /usr/pgsql-15/bin/pg_controldata -D /u01/pgsql/15 | grep 'Latest checkpoint location'
+Latest checkpoint location:           0/D96D1BA8
+[postgres@rajesh-a01 pg_wal]$ psql -c "select pg_current_wal_lsn()";
+ pg_current_wal_lsn
+--------------------
+ 0/D96D1C58
+(1 row)
+
+=========================
+
+TEST CASE: Remove middle walfile.
+----------------------------
+
+[postgres@rajesh-a01 pg_wal]$ /usr/pgsql-15/bin/pg_controldata -D /u01/pgsql/15 | grep 'Latest checkpoint location'
+Latest checkpoint location:           0/D96D1BA8
+[postgres@rajesh-a01 pg_wal]$
+[postgres@rajesh-a01 pg_wal]$ /usr/pgsql-15/bin/pgbench -i -s 15 postgres
+dropping old tables...
+creating tables...
+generating data (client-side)...
+1500000 of 1500000 tuples (100%) done (elapsed 1.90 s, remaining 0.00 s)
+vacuuming...
+creating primary keys...
+done in 3.10 s (drop tables 0.05 s, create tables 0.01 s, client-side generate 1.93 s, vacuum 0.19 s, primary keys 0.91 s).
+[postgres@rajesh-a01 pg_wal]$
+[postgres@rajesh-a01 pg_wal]$ psql -c "select pg_current_wal_lsn()";
+ pg_current_wal_lsn
+--------------------
+ 0/E4F52288
+(1 row)
+
+[postgres@rajesh-a01 pg_wal]$
+[postgres@rajesh-a01 pg_wal]$ ls -lrt | tail -15
+-rw------- 1 postgres postgres 16777216 Apr 19 18:09 0000000100000000000000FE
+-rw------- 1 postgres postgres 16777216 Apr 19 18:09 0000000100000000000000FF
+-rw------- 1 postgres postgres 16777216 Apr 19 18:09 000000010000000100000000
+-rw------- 1 postgres postgres 16777216 Apr 19 18:59 0000000100000000000000D9
+-rw------- 1 postgres postgres 16777216 Apr 19 18:59 0000000100000000000000DA
+-rw------- 1 postgres postgres 16777216 Apr 19 18:59 0000000100000000000000DB
+-rw------- 1 postgres postgres 16777216 Apr 19 18:59 0000000100000000000000DC
+-rw------- 1 postgres postgres 16777216 Apr 19 18:59 0000000100000000000000DD
+-rw------- 1 postgres postgres 16777216 Apr 19 18:59 0000000100000000000000DE
+-rw------- 1 postgres postgres 16777216 Apr 19 18:59 0000000100000000000000DF
+-rw------- 1 postgres postgres 16777216 Apr 19 18:59 0000000100000000000000E0
+-rw------- 1 postgres postgres 16777216 Apr 19 18:59 0000000100000000000000E1
+-rw------- 1 postgres postgres 16777216 Apr 19 18:59 0000000100000000000000E2
+-rw------- 1 postgres postgres 16777216 Apr 19 18:59 0000000100000000000000E3
+-rw------- 1 postgres postgres 16777216 Apr 19 18:59 0000000100000000000000E4
+[postgres@rajesh-a01 pg_wal]$
+[postgres@rajesh-a01 pg_wal]$
+[postgres@rajesh-a01 pg_wal]$ /usr/pgsql-15/bin/pg_ctl -D /u01/pgsql/15 stop -m immediate
+waiting for server to shut down.... done
+server stopped
+[postgres@rajesh-a01 pg_wal]$
+[postgres@rajesh-a01 pg_wal]$ mv 0000000100000000000000E1 ../
+[postgres@rajesh-a01 pg_wal]$
+[postgres@rajesh-a01 pg_wal]$ /usr/pgsql-15/bin/pg_ctl -D /u01/pgsql/15 start
+waiting for server to start....2025-04-19 19:00:17.606 UTC [76427] LOG:  redirecting log output to logging collector process
+2025-04-19 19:00:17.606 UTC [76427] HINT:  Future log output will appear in directory "log".
+ done
+server started
+[postgres@rajesh-a01 pg_wal]$
+[postgres@rajesh-a01 pg_wal]$ ls -lrt | tail -15
+-rw------- 1 postgres postgres 16777216 Apr 19 18:09 0000000100000000000000F6
+-rw------- 1 postgres postgres 16777216 Apr 19 18:09 0000000100000000000000F7
+-rw------- 1 postgres postgres 16777216 Apr 19 18:09 0000000100000000000000F8
+-rw------- 1 postgres postgres 16777216 Apr 19 18:09 0000000100000000000000F9
+-rw------- 1 postgres postgres 16777216 Apr 19 18:09 0000000100000000000000FA
+-rw------- 1 postgres postgres 16777216 Apr 19 18:09 0000000100000000000000FB
+-rw------- 1 postgres postgres 16777216 Apr 19 18:09 0000000100000000000000FC
+-rw------- 1 postgres postgres 16777216 Apr 19 18:09 0000000100000000000000FD
+-rw------- 1 postgres postgres 16777216 Apr 19 18:09 0000000100000000000000FE
+-rw------- 1 postgres postgres 16777216 Apr 19 18:09 0000000100000000000000FF
+-rw------- 1 postgres postgres 16777216 Apr 19 18:09 000000010000000100000000
+-rw------- 1 postgres postgres 16777216 Apr 19 18:59 0000000100000000000000E2
+-rw------- 1 postgres postgres 16777216 Apr 19 18:59 0000000100000000000000E3
+-rw------- 1 postgres postgres 16777216 Apr 19 18:59 0000000100000000000000E4
+-rw------- 1 postgres postgres 16777216 Apr 19 19:00 0000000100000000000000E1
+[postgres@rajesh-a01 pg_wal]$
+
+DATALOSS:
+0000000100000000000000E2
+0000000100000000000000E3
+0000000100000000000000E4
+
+=================
+2025-04-19 19:00:17.606 UTC [76427] LOG:  starting PostgreSQL 15.10 on x86_64-pc-linux-gnu, compiled by gcc (GCC) 8.5.0 20210514 (Red Hat 8.5.0-22), 64-bit
+2025-04-19 19:00:17.607 UTC [76427] LOG:  listening on IPv6 address "::1", port 5432
+2025-04-19 19:00:17.607 UTC [76427] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2025-04-19 19:00:17.609 UTC [76427] LOG:  listening on Unix socket "/run/postgresql/.s.PGSQL.5432"
+2025-04-19 19:00:17.613 UTC [76427] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
+2025-04-19 19:00:17.617 UTC [76431] LOG:  database system was interrupted; last known up at 2025-04-19 18:54:39 UTC
+2025-04-19 19:00:17.626 UTC [76431] LOG:  database system was not properly shut down; automatic recovery in progress
+2025-04-19 19:00:17.628 UTC [76431] LOG:  redo starts at 0/D96D1C20
+2025-04-19 19:00:17.940 UTC [76431] LOG:  redo done at 0/E0FFE6A8 system usage: CPU: user: 0.13 s, system: 0.11 s, elapsed: 0.31 s
+2025-04-19 19:00:17.981 UTC [76429] LOG:  checkpoint starting: end-of-recovery immediate wait
+2025-04-19 19:00:18.304 UTC [76429] LOG:  checkpoint complete: wrote 16319 buffers (99.6%); 0 WAL file(s) added, 8 removed, 0 recycled; write=0.192 s, sync=0.116 s, total=0.325 s; sync files=33, longest=0.108 s, average=0.004 s; distance=124089 kB, estimate=124089 kB
+2025-04-19 19:00:18.312 UTC [76427] LOG:  database system is ready to accept connections
+
+
+===================
+
+BEFORE:
+[postgres@rajesh-a01 pg_wal]$ psql -c "select pg_current_wal_lsn()";
+ pg_current_wal_lsn
+--------------------
+ 0/E4F52288
+
+
+NOW:
+[postgres@rajesh-a01 pg_wal]$ /usr/pgsql-15/bin/pg_controldata -D /u01/pgsql/15 | grep 'Latest checkpoint location'
+Latest checkpoint location:           0/E1000058
+[postgres@rajesh-a01 pg_wal]$ psql -c "select pg_current_wal_lsn()";
+ pg_current_wal_lsn
+--------------------
+ 0/E1000108
+(1 row)
+
+===========
+database get started. but commited data in walfiles got missed.
+never messup with the walfiles.
+
+
+=============================
+
+TESTCASE-3 (RESET LOGS)
+----------
+[postgres@rajesh-a01 pg_wal]$ /usr/pgsql-15/bin/pg_controldata -D /u01/pgsql/15 | grep 'Latest checkpoint location'
+Latest checkpoint location:           0/E1000058
+[postgres@rajesh-a01 pg_wal]$
+[postgres@rajesh-a01 pg_wal]$ psql -c "select pg_current_wal_lsn()";
+ pg_current_wal_lsn
+--------------------
+ 0/E1000108
+(1 row)
+
+[postgres@rajesh-a01 pg_wal]$ /usr/pgsql-15/bin/pgbench -i -s 15 postgres
+dropping old tables...
+creating tables...
+generating data (client-side)...
+1500000 of 1500000 tuples (100%) done (elapsed 1.87 s, remaining 0.00 s)
+vacuuming...
+creating primary keys...
+done in 3.04 s (drop tables 0.02 s, create tables 0.00 s, client-side generate 1.89 s, vacuum 0.18 s, primary keys 0.94 s).
+[postgres@rajesh-a01 pg_wal]$
+[postgres@rajesh-a01 pg_wal]$ psql -c "select pg_current_wal_lsn()";
+ pg_current_wal_lsn
+--------------------
+ 0/EC8734C0
+(1 row)
+
+[postgres@rajesh-a01 pg_wal]$
+[postgres@rajesh-a01 pg_wal]$ ls -lrt | tail -15
+-rw------- 1 postgres postgres 16777216 Apr 19 18:09 0000000100000000000000FE
+-rw------- 1 postgres postgres 16777216 Apr 19 18:09 0000000100000000000000FF
+-rw------- 1 postgres postgres 16777216 Apr 19 18:09 000000010000000100000000
+-rw------- 1 postgres postgres 16777216 Apr 19 19:10 0000000100000000000000E1
+-rw------- 1 postgres postgres 16777216 Apr 19 19:10 0000000100000000000000E2
+-rw------- 1 postgres postgres 16777216 Apr 19 19:10 0000000100000000000000E3
+-rw------- 1 postgres postgres 16777216 Apr 19 19:10 0000000100000000000000E4
+-rw------- 1 postgres postgres 16777216 Apr 19 19:10 0000000100000000000000E5
+-rw------- 1 postgres postgres 16777216 Apr 19 19:10 0000000100000000000000E6
+-rw------- 1 postgres postgres 16777216 Apr 19 19:10 0000000100000000000000E7
+-rw------- 1 postgres postgres 16777216 Apr 19 19:10 0000000100000000000000E8
+-rw------- 1 postgres postgres 16777216 Apr 19 19:10 0000000100000000000000E9
+-rw------- 1 postgres postgres 16777216 Apr 19 19:10 0000000100000000000000EA
+-rw------- 1 postgres postgres 16777216 Apr 19 19:10 0000000100000000000000EB
+-rw------- 1 postgres postgres 16777216 Apr 19 19:10 0000000100000000000000EC
+[postgres@rajesh-a01 pg_wal]$
+[postgres@rajesh-a01 pg_wal]$ /usr/pgsql-15/bin/pg_controldata -D /u01/pgsql/15 | grep 'Latest checkpoint location'
+Latest checkpoint location:           0/E1000058
+[postgres@rajesh-a01 pg_wal]$
+[postgres@rajesh-a01 pg_wal]$ psql -c "select pg_current_wal_lsn()";
+ pg_current_wal_lsn
+--------------------
+ 0/EC8734F8
+(1 row)
+
+[postgres@rajesh-a01 pg_wal]$  /usr/pgsql-15/bin/pg_ctl -D /u01/pgsql/15 stop -m immediate
+waiting for server to shut down.... done
+server stopped
+[postgres@rajesh-a01 pg_wal]$
+[postgres@rajesh-a01 pg_wal]$ mv 0000000100000000000000E1 ../
+[postgres@rajesh-a01 pg_wal]$
+[postgres@rajesh-a01 pg_wal]$ /usr/pgsql-15/bin/pg_ctl -D /u01/pgsql/15 start
+waiting for server to start....2025-04-19 19:11:15.256 UTC [77023] LOG:  redirecting log output to logging collector process
+2025-04-19 19:11:15.256 UTC [77023] HINT:  Future log output will appear in directory "log".
+ stopped waiting
+pg_ctl: could not start server
+Examine the log output.
+
+=====================
+
+2025-04-19 19:10:17.551 UTC [76429] LOG:  checkpoint starting: time
+2025-04-19 19:10:58.262 UTC [76427] LOG:  received immediate shutdown request
+2025-04-19 19:10:58.291 UTC [76427] LOG:  database system is shut down
+2025-04-19 19:11:15.256 UTC [77023] LOG:  starting PostgreSQL 15.10 on x86_64-pc-linux-gnu, compiled by gcc (GCC) 8.5.0 20210514 (Red Hat 8.5.0-22), 64-bit
+2025-04-19 19:11:15.256 UTC [77023] LOG:  listening on IPv6 address "::1", port 5432
+2025-04-19 19:11:15.256 UTC [77023] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2025-04-19 19:11:15.258 UTC [77023] LOG:  listening on Unix socket "/run/postgresql/.s.PGSQL.5432"
+2025-04-19 19:11:15.260 UTC [77023] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
+2025-04-19 19:11:15.264 UTC [77027] LOG:  database system was interrupted; last known up at 2025-04-19 19:00:18 UTC
+2025-04-19 19:11:15.273 UTC [77027] LOG:  invalid primary checkpoint record
+2025-04-19 19:11:15.273 UTC [77027] PANIC:  could not locate a valid checkpoint record
+2025-04-19 19:11:15.443 UTC [77023] LOG:  startup process (PID 77027) was terminated by signal 6: Aborted
+2025-04-19 19:11:15.443 UTC [77023] LOG:  aborting startup due to startup process failure
+2025-04-19 19:11:15.443 UTC [77023] LOG:  database system is shut down
+
+================
+
+[postgres@rajesh-a01 pg_wal]$
+[postgres@rajesh-a01 pg_wal]$  /usr/pgsql-15/bin/pg_resetwal -D /u01/pgsql/15
+The database server was not shut down cleanly.
+Resetting the write-ahead log might cause data to be lost.
+If you want to proceed anyway, use -f to force reset.
+[postgres@rajesh-a01 pg_wal]$
+[postgres@rajesh-a01 pg_wal]$
+[postgres@rajesh-a01 pg_wal]$  /usr/pgsql-15/bin/pg_resetwal -D /u01/pgsql/15  -f
+Write-ahead log reset
+[postgres@rajesh-a01 pg_wal]$
+[postgres@rajesh-a01 pg_wal]$ /usr/pgsql-15/bin/pg_ctl -D /u01/pgsql/15 start
+waiting for server to start....2025-04-19 19:13:06.146 UTC [77107] LOG:  redirecting log output to logging collector process
+2025-04-19 19:13:06.146 UTC [77107] HINT:  Future log output will appear in directory "log".
+ done
+server started
+[postgres@rajesh-a01 pg_wal]$
+
+=======
+2025-04-19 19:13:06.146 UTC [77107] LOG:  starting PostgreSQL 15.10 on x86_64-pc-linux-gnu, compiled by gcc (GCC) 8.5.0 20210514 (Red Hat 8.5.0-22), 64-bit
+2025-04-19 19:13:06.147 UTC [77107] LOG:  listening on IPv6 address "::1", port 5432
+2025-04-19 19:13:06.147 UTC [77107] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2025-04-19 19:13:06.148 UTC [77107] LOG:  listening on Unix socket "/run/postgresql/.s.PGSQL.5432"
+2025-04-19 19:13:06.149 UTC [77107] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
+2025-04-19 19:13:06.152 UTC [77111] LOG:  database system was shut down at 2025-04-19 19:12:44 UTC
+2025-04-19 19:13:06.160 UTC [77107] LOG:  database system is ready to accept connections
+
+
+=================
+
+[postgres@rajesh-a01 pg_wal]$ /usr/pgsql-15/bin/pg_controldata -D /u01/pgsql/15 | grep 'Latest checkpoint location'
+Latest checkpoint location:           1/2000028
+[postgres@rajesh-a01 pg_wal]$
+[postgres@rajesh-a01 pg_wal]$ psql -c "select pg_current_wal_lsn()";
+ pg_current_wal_lsn
+--------------------
+ 1/2000110
+(1 row)
+
+[postgres@rajesh-a01 pg_wal]$ ls -lrt | tail -15
+total 16384
+drwx------ 2 postgres postgres        6 Apr  6 18:46 archive_status
+-rw------- 1 postgres postgres 16777216 Apr 19 19:13 000000010000000100000002
+[postgres@rajesh-a01 pg_wal]$
+[postgres@rajesh-a01 pg_wal]$
+
+000000010000000100000002 -------> Timeline got changed... 2nd section
+

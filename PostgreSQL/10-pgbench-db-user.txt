@@ -1,0 +1,64 @@
+pgbench
+
+#create benchmark tables (-s scale factor)
+/usr/pgsql-15/bin/pgbench -i -s 10 postgres
+
+#to run benchmark
+/usr/pgsql-15/bin/pgbench -c 10 -t 10 postgres
+
+# 80 connections, run tx for 100 seconds and show progress every 3 seconds
+/usr/pgsql-15/bin/pgbench -c 80 -T 100 -P 3 postgres
+
+
+\watch -> run the same command every second
+user administration
+----------------------
+Database Limits:
+---------------
+database size		unlimited	
+number of databases	4,294,950,911	
+relations per database	1,431,650,303	
+relation size		32 TB		with the default BLCKSZ of 8192 bytes
+rows per table		limited by the number of tuples that can fit onto 4,294,967,295 pages	
+columns per table	1,600		further limited by tuple size fitting on a single page; see note below
+columns in a result set	1,664	
+field size		1 GB	
+indexes per table	unlimited	constrained by maximum relations per database
+columns per index	32		can be increased by recompiling PostgreSQL
+partition keys		32		can be increased by recompiling PostgreSQL
+identifier length	63 bytes	can be increased by recompiling PostgreSQL
+function arguments	100		can be increased by recompiling PostgreSQL
+query parameters	65,535
+
+Databases:
+==========
+
+postgres  -> default administrative connection database
+template0 -> unmodifiable empty database
+template1 -> default template for new databases
+
+
+create database hdfc_db template template0;
+
+postgres=# create user hdfc_user with password 'hdfc_user';
+CREATE ROLE
+postgres=# create database hdfc_db with owner 'hdfc_user';
+CREATE DATABASE
+postgres=# \q
+[postgres@lab01 bin]$  psql -U hdfc_user -d hdfc_db
+psql (15.3)
+Type "help" for help.
+
+hdfc_db=> \dn
+      List of schemas
+  Name  |       Owner
+--------+-------------------
+ public | pg_database_owner
+(1 row)
+
+hdfc_db=> create schema hdfc_user;
+CREATE SCHEMA
+hdfc_db=>
+hdfc_db=> create table emp(id int, sal int);
+CREATE TABLE
+hdfc_db=>

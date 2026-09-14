@@ -1,0 +1,156 @@
+Installation 
+-------------
+1. source code installation
+2. yum method
+3. rpm method
+
+1. Source code installation
+
+	1. Download the software
+	wget https://ftp.postgresql.org/pub/source/v15.2/postgresql-15.2.tar.gz
+	
+	2. Extract it
+	tar -xf postgresql-15.2.tar.gz
+	
+	Pre-requisites
+	-----------------
+	
+	1. make     | make --version 	    	| >3.80  		      | yum install make
+	2. gcc      | rpm -qa | grep gcc    	| gcc*			      | yum install gcc*
+	3. readline | rpm -qa | grep readline   | readline, readline-devel    | yum install readline*
+	4. zlib     | rpm -qa | grep zlib   	| zlib, zlib-devel            | yum install zlib*
+	
+	Short Version Installation
+	----------------------------
+
+	cd /root/postgresql-15.2
+	
+    	./configure					#check if pre requisites installed or not?
+    	make						#compile all C programs
+    	make install					#run all C programs
+    
+	useradd postgres				#add postgres user to control all postgres activities
+	passwd postgres					#give password
+    	mkdir -p /u01					#Create mount point
+   	
+	chown postgres:postgres /u01			#Gave full permission on mount point
+    	mkdir -p /u01/pgsql/15				#decide the database files location
+    	chown -R postgres:postgres /u01/pgsql/15    	#Gave full permission to postgres user
+	su - postgres					#switch to postgres
+	
+	/usr/local/pgsql/bin/initdb -D /u01/pgsql/15			#initializing the cluster
+	/usr/local/pgsql/bin/pg_ctl -D /u01/pgsql/15 start		#start the cluster
+	/usr/local/pgsql/bin/psql					#login to database
+	
+2. yum method
+---------------
+
+-> Go to packages section in https://www.postgresql.org/download/  and choose your machine type.
+
+sudo yum install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm
+sudo yum install -y postgresql14-server
+
+sudo /usr/pgsql-14/bin/postgresql-14-setup initdb
+sudo systemctl enable postgresql-14
+sudo systemctl start postgresql-14
+
+/usr/pgsql-14/bin/postmaster -D /var/lib/pgsql/14/data/
+
+[OR]
+
+mkdir -p /u01/pgsql/14
+chown -R postgres:postgres /u01/pgsql/14
+su - postgres
+
+/usr/pgsql-14/bin/initdb -D /u01/pgsql/14
+/usr/pgsql-14/bin/pg_ctl -D /u01/pgsql/14  start
+/usr/pgsql-14/bin/psql
+
+cd /etc/yum.repos.d -- repo folder
+
+3. RPM Method
+--------------
+
+For example, v15
+
+Go to https://yum.postgresql.org/13/redhat/rhel-7-x86_64/repoview/postgresqldbserver13.group.html
+Download all the rpms.
+
+wget https://yum.postgresql.org/13/redhat/rhel-7-x86_64/postgresql13-13.10-1PGDG.rhel7.x86_64.rpm
+wget https://yum.postgresql.org/13/redhat/rhel-7-x86_64/postgresql13-contrib-13.10-1PGDG.rhel7.x86_64.rpm
+wget https://yum.postgresql.org/13/redhat/rhel-7-x86_64/postgresql13-libs-13.10-1PGDG.rhel7.x86_64.rpm
+wget https://yum.postgresql.org/13/redhat/rhel-7-x86_64/postgresql13-server-13.10-1PGDG.rhel7.x86_64.rpm
+
+
+1. postgresql13-libs-13.10-1PGDG.rhel7.x86_64.rpm
+2. postgresql13-13.10-1PGDG.rhel7.x86_64.rpm
+3. postgresql13-server-13.10-1PGDG.rhel7.x86_64.rpm
+4. postgresql13-contrib-13.10-1PGDG.rhel7.x86_64.rpm
+
+Installation
+-------------
+rpm -ivh <rpm_name>
+
+mkdir -p /u01/pgsql/15
+chown -R postgres:postgres /u01/pgsql/15
+su - postgres
+
+/usr/pgsql-15/bin/initdb -D /u01/pgsql/15
+/usr/pgsql-15/bin/pg_ctl -D /u01/pgsql/15 start
+/usr/pgsql-15/bin/psql
+
+How can I have multiple cluster?
+---------------------------------	
+
+- change the port number (postgresql.conf -> port=5433)  and start the database cluster. 
+
+Setting up environment variables
+----------------------------------
+vi .bash_profile
+PGHOME=/usr/local/pgsql
+PATH=$PGHOME/bin:$PATH:$HOME/.local/bin:$HOME/bin
+export PATH
+
+[postgres@lab01 ~]$ . .bash_profile
+
+Install Extensions Module
+--------------------------
+-> source code
+cd /root/postgresql-15.2/contrib
+make
+make install
+
+-> yum
+yum install postgresql14-contrib
+
+-> rpm 
+rpm -ivh postgresql13-contrib-13.10-1PGDG.rhel7.x86_64.rpm
+
+postgres=# create extension pg_buffercache;
+CREATE EXTENSION
+postgres=#
+
+Install Extensions (External)
+-----------------------------
+Example., pgfincore
+-> Download extension, as a root user follow below steps
+
+[root@lab01 pgfincore-master]# make
+make: pg_config: Command not found
+
+export PATH=/usr/local/pgsql/bin:$PATH
+
+[root@lab01 pgfincore-master]# export PATH=/usr/local/pgsql/bin:$PATH
+[root@lab01 pgfincore-master]# make
+
+
+===========================
+-> Installing development modules
+---------------------------------
+pre-requisites
+---------------
+yum -y install epel-release
+yum -y install centos-release-scl-rh
+yum -y install llvm-toolset-7-clang nano
+
+yum install postgresql14-devel

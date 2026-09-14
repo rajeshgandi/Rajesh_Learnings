@@ -1,0 +1,59 @@
+connection establishment
+
+- /usr/pgsql-14/bin/postgres -D /u01/pgsql/14    (postmaster process)
+
+	- connection establishment					--> listener
+	- Take care of other background processes	--> PMON
+	- Instance recovery.						--> SMON
+	
+log_connections = on
+log_discconnections = on
+log_duration = on
+listen_address=*
+
+systemctl stop firewalld
+
+Everytime a new connection is established., a new backend process pid is created
+
+CLient process request a connection establishment to postaster process.
+Postmaster process immediately creates User Backend Process
+After Authentication is made, this user backend process connect to the database and is assigned to the client process.
+
+client --> received by --> Postmaster --> creates user backend process --> hba auth.
+
+pg_cancel_backend('<PID>');
+postgres=# select *, pg_sleep(30) from emp;
+ERROR:  canceling statement due to user request
+
+
+pg_terminate_backend('<PID>');
+postgres=# select *, pg_sleep(30) from emp;
+FATAL:  terminating connection due to administrator command
+server closed the connection unexpectedly
+        This probably means the server terminated abnormally
+        before or while processing the request.
+The connection to the server was lost. Attempting reset: Succeeded.
+postgres=#
+
+1=root process = parent process
+
+postgres   2833      1   /usr/pgsql-14/bin/postgres -D /u01/pgsql/14
+postgres   2834   2833   postgres: logger
+postgres   2836   2833   postgres: checkpointer
+postgres   2837   2833   postgres: background writer
+postgres   2838   2833   postgres: walwriter
+postgres   2839   2833   postgres: autovacuum launcher
+postgres   2840   2833   postgres: stats collector
+postgres   2841   2833   postgres: logical replication launcher
+
+postgres   3088   2833   postgres: postgres postgres [local] idle
+postgres   3218   2833   postgres: postgres postgres [local] idle
+
+
+
+postgres   3283   2833  0 07:36 ?        00:00:00 postgres: checkpointer
+postgres   3284   2833  0 07:36 ?        00:00:00 postgres: background writer
+postgres   3285   2833  0 07:36 ?        00:00:00 postgres: walwriter
+postgres   3286   2833  0 07:36 ?        00:00:00 postgres: autovacuum launcher
+postgres   3287   2833  0 07:36 ?        00:00:00 postgres: stats collector
+postgres   3288   2833  0 07:36 ?        00:00:00 postgres: logical replication launcher

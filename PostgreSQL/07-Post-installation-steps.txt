@@ -1,0 +1,38 @@
+Post Installation Steps:
+
+1. Change postgres password. \passwd
+
+2. Enable external connectivity. pg_hba.conf
+# TYPE  DATABASE   USER    ADDRESS        METHOD
+local   all        all                    trust
+host    all        all     0.0.0.0/0      md5
+
+3. listen_address='*'
+
+4. Allow 5432 port
+firewall-cmd --zone=public --add-port=5432/tcp --permanent
+firewall-cmd --reload
+
+5. pgtune paraameters (Another tool, pgconfig.org)
+8GB RAM, 16 CPU's
+
+max_connections = 1000
+shared_buffers = 2GB			# 25% of RAM
+effective_cache_size = 6GB		# Total RAM - shared_buffers
+maintenance_work_mem = 512MB	# 25% of shared_buffers	
+checkpoint_completion_target = 0.9
+wal_buffers = 16MB
+default_statistics_target = 100	# takes 100 records as sample and prepare the plan
+random_page_cost = 1.1			# HDD 1.1, SSD 4
+effective_io_concurrency = 300
+work_mem = 524kB				# Sorting. RAM/connections
+huge_pages = off
+min_wal_size = 2GB
+max_wal_size = 8GB
+max_worker_processes = 16				# CPU's
+max_parallel_workers_per_gather = 4		# 1/4th of CPU's
+max_parallel_workers = 16				# CPU's
+max_parallel_maintenance_workers = 4	# 1/4th of CPU's
+
+
+systemctl start firewalld ==> Forever tries to connect

@@ -1,0 +1,70 @@
+https://github.com/citusdata/pg_cron
+https://pgxn.org/dist/pg_repack/
+https://severalnines.com/blog/dynamic-monitoring-postgresql-instances-using-pgtop/
+
+pg_cron
+---------
+-> download and install pgcron
+
+postgres=# create table emp (id serial, sal int,ins_date timestamp default now());
+CREATE TABLE
+postgres=#
+postgres=#
+postgres=# insert into emp (sal) values (100);
+INSERT 0 1
+postgres=# select * from emp;
+ id | sal |         ins_date
+----+-----+---------------------------
+  1 | 100 | 2023-06-12 00:49:36.40559
+(1 row)
+
+postgres=# SELECT cron.schedule('* * * * *', $$insert into emp (sal) values (100)$$);
+ schedule
+----------
+        1
+(1 row)
+
+postgres=#  select * from cron.job_run_details order by start_time desc limit 5;
+ jobid | runid | job_pid | database | username |              command               |  status   | return_message |            start_time            |
+     end_time
+-------+-------+---------+----------+----------+------------------------------------+-----------+----------------+----------------------------------+--------
+--------------------------
+     1 |     1 |  112354 | postgres | postgres | insert into emp (sal) values (100) | succeeded | INSERT 0 1     | 2023-06-12 00:51:00.034661+05:30 | 2023-06
+-12 00:51:00.037439+05:30
+(1 row)
+
+pg_repack
+----------
+
+wget https://api.pgxn.org/dist/pg_repack/1.4.8/pg_repack-1.4.8.zip
+unzip pg_repack-1.4.8.zip
+cd /root/pg_repack-1.4.8
+export PATH=/usr/pgsql-15/bin:$PATH
+
+make
+make install
+
+postgres=# create extension pg_repack;
+CREATE EXTENSION
+postgres=#
+
+/usr/pgsql-15/bin/pg_repack --help
+
+[postgres@lab01 ~]$ /usr/pgsql-15/bin/pg_repack --all
+INFO: repacking database "postgres"
+INFO: repacking table "public.pgbench_accounts"
+INFO: repacking table "public.pgbench_branches"
+INFO: repacking table "public.pgbench_tellers"
+INFO: repacking database "template1"
+INFO: database "template1" skipped: pg_repack 1.4.8 is not installed in the database
+[postgres@lab01 ~]$
+
+[or]
+
+[postgres@lab01 ~]$ /usr/pgsql-15/bin/pg_repack -d postgres
+INFO: repacking table "public.pgbench_accounts"
+INFO: repacking table "public.pgbench_branches"
+INFO: repacking table "public.pgbench_tellers"
+[postgres@lab01 ~]$
+
+https://severalnines.com/blog/dynamic-monitoring-postgresql-instances-using-pgtop/

@@ -1,0 +1,98 @@
+/usr/pgsql-15/bin/postgres -D /u01/pgsql/15
+postgres: stats collector		= writes information to pg_stat* tables 
+postgres: autovacuum launcher	= Scans pg_stat_all_tables and Removes dead tuples from tables if reaches threshold
+postgres: logger - Writes information to alert log
+postgres: walwriter - Writes information from wal buffers to walfiles
+
+postgres: checkpointer
+postgres: background writer
+postgres: logical replication launcher
+
+postmaster :
+connection estableshment
+instance recovery
+take care of other BGP
+
+autovacuum :
+
+#autovacuum_work_mem = -1               # min 1MB, or -1 to use maintenance_work_mem
+#log_autovacuum_min_duration = 10min    # log autovacuum activity;
+#autovacuum = on                        # Enable autovacuum subprocess?  'on'
+#autovacuum_max_workers = 3             # max number of autovacuum subprocesses
+#autovacuum_naptime = 1min              # time between autovacuum runs
+
+#autovacuum_analyze_threshold = 50      # min number of row updates before
+#autovacuum_analyze_scale_factor = 0.1  # fraction of table size before analyze
+
+#autovacuum_vacuum_threshold = 50       # min number of row updates before
+#autovacuum_vacuum_scale_factor = 0.2   # fraction of table size before vacuum
+
+#autovacuum_vacuum_insert_threshold = 1000      # min number of row inserts
+#autovacuum_vacuum_insert_scale_factor = 0.2    # fraction of inserts over table
+
+#autovacuum_freeze_max_age = 200000000  				# maximum XID age before forced vacuum
+#autovacuum_multixact_freeze_max_age = 400000000        # maximum multixact age
+#autovacuum_vacuum_cost_delay = 2ms     # default vacuum cost delay for autovacuum, in milliseconds;
+#autovacuum_vacuum_cost_limit = -1      # default vacuum cost limit for autovacuum, -1 means use
+
+
+analyze threshold = autovacuum_analyze_threshold + autovacuum_analyze_scale_factor * number of tuples
+vacuum threshold = autovacuum_vacuum_threshold + autovacuum_vacuum_scale_factor * number of tuples
+
+if a table has 1000 records, the table is a candidate for analyze    if it has 50+0.1*1000 records i.e., 150 changed.
+if a table has 1000 records, the table is a candidate for autovacuum if it has 50+0.2*1000 records i.e., 250 changed.
+
+For business critical large table, change the scale factors. 
+or else, disable autovacuum and schedule manual vacuum
+Also schedule manual vacuum at non-business hours
+
+
+Txid wraparound. 
+autovacuum_freeze_max_age = 200000000 = 200 Million (10% of max_tx_limit 2 Billion)
+If it reaches 2 Billion, it converts into read only mode. 
+If it reaches 4 Billion, it goes into hung state. 
+autovacuum freeze: replces txid's with -1 and release the txid's for further use.
+
+Upon first vacuum, two files are created. vm and fsm
+VM: Visibility Map: Useful only for index only scans
+FSM: Free Space Mapping: tracks which one dead and which one is live tuples.
+
+#autovacuum_vacuum_cost_delay = 2ms     # default vacuum cost delay for autovacuum, in milliseconds;
+#autovacuum_vacuum_cost_limit = -1      # default vacuum cost limit for autovacuum, -1 means use
+
+autovacuum_vacuum_cost_limit = -1 means use cost limit:
+
+postgres=# show vacuum_cost_limit;
+ vacuum_cost_limit
+-------------------
+ 200
+(1 row)
+
+That mean, for evry 200 records of autovacuuming ., sleep for vacuum_cost_delay 2ms.
+
+multixact:
+select * from emp for update;
+In base directory, that info is stored in pg_multixact folder
+Locks entire emp table, just for updating few records within table.
+This craetes multzact tx.ids., it has a limit of 400 millions
+
+================================
+
+"canceling statement due to conflict with recovery"
+
+If there's a replication conflict between the primary instance and the read replica, then you receive the cancelling statement error. PostgreSQL can't apply the WAL information on the read replica because the changes might block an activity that's happening on the read replica. For example, you run a DROP statement on the primary instance when a SELECT statement is running on the dropped table in the read replica. If the read replica applies the WAL record and cancels the SELECT statement, then you receive the cancelling statement error.
+
+Error message details: "User was holding a relation lock for too long"
+To resolve this issue, change the max_standby_streaming_delay or max_standby_archive_delay parameters to allow more time before the read replica cancels a conflicting standby statement. If the read replica reads the WAL data from the streaming replication, then modify the max_standby_streaming_delay parameter. If the read replica reads the WAL data from the archive location in Amazon Simple Storage Service (Amazon S3), then modify the max_standby_archive_delay parameter.
+
+Note: If you increase max_standby_archive_delay to keep queries that conflict with reading WAL archive entries, then it's a best practice to also increase max_standby_streaming_delay to prevent cancelations.
+
+https://repost.aws/knowledge-center/rds-postgresql-error-conflict-recovery
+https://stackoverflow.com/questions/14592436/postgresql-error-canceling-statement-due-to-conflict-with-recovery
+https://pganalyze.com/docs/log-insights/standby/B95
+https://support.simplebackups.com/en/articles/4916466-solving-postgresql-error-canceling-statement-due-to-conflict-with-recovery
+https://repost.aws/questions/QU1wrMgvTFTQqvDkJF9T0TXQ/rds-postgres-hot-standby-feedback-not-preventing-recovery-conflict
+https://dba.stackexchange.com/questions/280716/error-canceling-statement-due-to-conflict-with-recovery
+https://www.cybertec-postgresql.com/en/streaming-replication-conflicts-in-postgresql/
+https://www.youtube.com/watch?v=hqmmrTQ5rc4
+

@@ -1,0 +1,33 @@
+💡 What is Transaction ID Wraparound in PostgreSQL? 💡
+Imagine you have a notebook to track all your chores, and each chore gets a number. When you reach the end of the notebook, you start back at the beginning. But if you don’t keep track carefully, you might think old chores are new ones!
+
+In a database like PostgreSQL, something similar can happen. Each action gets a number, and if these numbers run out, the database might get "confused" and mix up old actions with new ones. This is called transaction wraparound.
+There are approximately 4 billion possible transaction IDs 
+
+Max Transaction IDs=2^32 ≈ 4,294,967,296
+
+🛑 Why It’s a Problem
+- The database might show wrong or stale data because it can’t tell the difference between old and new transactions.
+
+- When transaction IDs overlap, PostgreSQL may mishandle data, causing data corruption that’s difficult to fix.
+
+- PostgreSQL may have to stop operations to clean up old transactions and fix the wraparound problem, leading to unexpected downtime.
+
+🔍 How to Monitor Transaction ID Wraparound?
+Running the query below will show you which database is nearing the risk of Transaction ID wraparound and may need protective measures.
+
+SELECT
+ datname,
+ age(datfrozenxid) AS age,
+ (100 * (age(datfrozenxid) / current_setting('autovacuum_freeze_max_age')::float))::numeric(10, 8) AS emergency_autovacuum_percent,
+ (age(datfrozenxid)::numeric / 2000000000 * 100)::numeric(4, 2) AS wraparound_risk_percent
+FROM
+ pg_database
+ORDER BY
+ age DESC;
+
+🛡️ How to Avoid Transaction ID Wraparound in PostgreSQL🛡️
+- Regularly Run VACUUM
+- Monitor Transaction Age
+- Adjust Autovacuum Settings
+- Manually Vacuum Large Tables 

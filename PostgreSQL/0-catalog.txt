@@ -1,0 +1,536 @@
+[postgres@rajesh-a01 ~]$ cd /usr/local/pgsql/bin/
+[postgres@rajesh-a01 bin]$ ls -lrt
+total 14328
+-rwxr-xr-x 1 root root 9234040 Apr  6 17:39 postgres
+lrwxrwxrwx 1 root root       8 Apr  6 17:39 postmaster -> postgres
+-rwxr-xr-x 1 root root 1010416 Apr  6 17:39 ecpg
+-rwxr-xr-x 1 root root  165480 Apr  6 17:39 initdb
+-rwxr-xr-x 1 root root  124816 Apr  6 17:39 pg_amcheck
+-rwxr-xr-x 1 root root   58240 Apr  6 17:39 pg_archivecleanup
+-rwxr-xr-x 1 root root  173760 Apr  6 17:39 pg_basebackup
+-rwxr-xr-x 1 root root  120400 Apr  6 17:39 pg_receivewal
+-rwxr-xr-x 1 root root  120648 Apr  6 17:39 pg_recvlogical
+-rwxr-xr-x 1 root root   81336 Apr  6 17:39 pg_checksums
+-rwxr-xr-x 1 root root   56696 Apr  6 17:39 pg_config
+-rwxr-xr-x 1 root root   71224 Apr  6 17:39 pg_controldata
+-rwxr-xr-x 1 root root   90760 Apr  6 17:39 pg_ctl
+-rwxr-xr-x 1 root root  422280 Apr  6 17:39 pg_dump
+-rwxr-xr-x 1 root root  208008 Apr  6 17:39 pg_restore
+-rwxr-xr-x 1 root root  129688 Apr  6 17:39 pg_dumpall
+-rwxr-xr-x 1 root root   85464 Apr  6 17:39 pg_resetwal
+-rwxr-xr-x 1 root root  169000 Apr  6 17:39 pg_rewind
+-rwxr-xr-x 1 root root   63672 Apr  6 17:39 pg_test_fsync
+-rwxr-xr-x 1 root root   52944 Apr  6 17:39 pg_test_timing
+-rwxr-xr-x 1 root root  179872 Apr  6 17:39 pg_upgrade
+-rwxr-xr-x 1 root root  129072 Apr  6 17:39 pg_verifybackup
+-rwxr-xr-x 1 root root  127800 Apr  6 17:39 pg_waldump
+-rwxr-xr-x 1 root root  220752 Apr  6 17:39 pgbench
+-rwxr-xr-x 1 root root  727976 Apr  6 17:39 psql
+-rwxr-xr-x 1 root root  101968 Apr  6 17:39 createdb
+-rwxr-xr-x 1 root root   92864 Apr  6 17:39 dropdb
+-rwxr-xr-x 1 root root   98080 Apr  6 17:39 createuser
+-rwxr-xr-x 1 root root   92800 Apr  6 17:39 dropuser
+-rwxr-xr-x 1 root root   97648 Apr  6 17:39 clusterdb
+-rwxr-xr-x 1 root root  107080 Apr  6 17:39 vacuumdb
+-rwxr-xr-x 1 root root  106856 Apr  6 17:39 reindexdb
+-rwxr-xr-x 1 root root   92416 Apr  6 17:39 pg_isready
+[postgres@rajesh-a01 bin]$
+[postgres@rajesh-a01 bin]$
+[postgres@rajesh-a01 bin]$ cd /u01/pgsql/15
+[postgres@rajesh-a01 15]$
+[postgres@rajesh-a01 15]$ ls -lrt
+total 64
+drwx------ 2 postgres postgres     6 Apr  6 17:41 pg_snapshots
+drwx------ 2 postgres postgres     6 Apr  6 17:41 pg_serial
+drwx------ 2 postgres postgres     6 Apr  6 17:41 pg_notify
+drwx------ 2 postgres postgres     6 Apr  6 17:41 pg_dynshmem
+drwx------ 2 postgres postgres     6 Apr  6 17:41 pg_commit_ts
+-rw------- 1 postgres postgres     3 Apr  6 17:41 PG_VERSION
+drwx------ 2 postgres postgres     6 Apr  6 17:41 pg_twophase
+drwx------ 2 postgres postgres     6 Apr  6 17:41 pg_tblspc
+drwx------ 2 postgres postgres     6 Apr  6 17:41 pg_stat_tmp
+drwx------ 2 postgres postgres     6 Apr  6 17:41 pg_replslot
+drwx------ 4 postgres postgres    36 Apr  6 17:41 pg_multixact
+-rw------- 1 postgres postgres 29443 Apr  6 17:41 postgresql.conf
+-rw------- 1 postgres postgres    88 Apr  6 17:41 postgresql.auto.conf
+-rw------- 1 postgres postgres  1636 Apr  6 17:41 pg_ident.conf
+-rw------- 1 postgres postgres  4789 Apr  6 17:41 pg_hba.conf
+drwx------ 2 postgres postgres    18 Apr  6 17:41 pg_xact
+drwx------ 3 postgres postgres    60 Apr  6 17:41 pg_wal
+drwx------ 2 postgres postgres    18 Apr  6 17:41 pg_subtrans
+drwx------ 5 postgres postgres    33 Apr  6 17:41 base
+drwx------ 4 postgres postgres    68 Apr  6 17:41 pg_logical
+-rw------- 1 postgres postgres    51 Apr  6 17:41 postmaster.opts
+drwx------ 2 postgres postgres     6 Apr  6 17:41 pg_stat
+-rw------- 1 postgres postgres    80 Apr  6 17:41 postmaster.pid
+drwx------ 2 postgres postgres  4096 Apr  6 17:44 global
+[postgres@rajesh-a01 15]$
+[postgres@rajesh-a01 15]$ /usr/local/pgsql/bin/psql
+psql (15.2)
+Type "help" for help.
+
+postgres=# \set
+AUTOCOMMIT = 'on'
+COMP_KEYWORD_CASE = 'preserve-upper'
+DBNAME = 'postgres'
+ECHO = 'none'
+ECHO_HIDDEN = 'off'
+ENCODING = 'UTF8'
+FETCH_COUNT = '0'
+HIDE_TABLEAM = 'off'
+HIDE_TOAST_COMPRESSION = 'off'
+HISTCONTROL = 'none'
+HISTSIZE = '500'
+HOST = '/tmp'
+IGNOREEOF = '0'
+LAST_ERROR_MESSAGE = ''
+LAST_ERROR_SQLSTATE = '00000'
+ON_ERROR_ROLLBACK = 'off'
+ON_ERROR_STOP = 'off'
+PORT = '5432'
+PROMPT1 = '%/%R%x%# '
+PROMPT2 = '%/%R%x%# '
+PROMPT3 = '>> '
+QUIET = 'off'
+SERVER_VERSION_NAME = '15.2'
+SERVER_VERSION_NUM = '150002'
+SHOW_ALL_RESULTS = 'on'
+SHOW_CONTEXT = 'errors'
+SINGLELINE = 'off'
+SINGLESTEP = 'off'
+USER = 'postgres'
+VERBOSITY = 'default'
+VERSION = 'PostgreSQL 15.2 on x86_64-pc-linux-gnu, compiled by gcc (GCC) 8.5.0 20210514 (Red Hat 8.5.0-24), 64-bit'
+VERSION_NAME = '15.2'
+VERSION_NUM = '150002'
+postgres=#
+postgres=#
+postgres=#
+postgres=# \help
+Available help:
+  ABORT                            CLOSE                            CREATE VIEW                      DROP USER MAPPING
+  ALTER AGGREGATE                  CLUSTER                          DEALLOCATE                       DROP VIEW
+  ALTER COLLATION                  COMMENT                          DECLARE                          END
+  ALTER CONVERSION                 COMMIT                           DELETE                           EXECUTE
+  ALTER DATABASE                   COMMIT PREPARED                  DISCARD                          EXPLAIN
+  ALTER DEFAULT PRIVILEGES         COPY                             DO                               FETCH
+  ALTER DOMAIN                     CREATE ACCESS METHOD             DROP ACCESS METHOD               GRANT
+  ALTER EVENT TRIGGER              CREATE AGGREGATE                 DROP AGGREGATE                   IMPORT FOREIGN SCHEMA
+  ALTER EXTENSION                  CREATE CAST                      DROP CAST                        INSERT
+  ALTER FOREIGN DATA WRAPPER       CREATE COLLATION                 DROP COLLATION                   LISTEN
+  ALTER FOREIGN TABLE              CREATE CONVERSION                DROP CONVERSION                  LOAD
+  ALTER FUNCTION                   CREATE DATABASE                  DROP DATABASE                    LOCK
+  ALTER GROUP                      CREATE DOMAIN                    DROP DOMAIN                      MERGE
+  ALTER INDEX                      CREATE EVENT TRIGGER             DROP EVENT TRIGGER               MOVE
+  ALTER LANGUAGE                   CREATE EXTENSION                 DROP EXTENSION                   NOTIFY
+  ALTER LARGE OBJECT               CREATE FOREIGN DATA WRAPPER      DROP FOREIGN DATA WRAPPER        PREPARE
+  ALTER MATERIALIZED VIEW          CREATE FOREIGN TABLE             DROP FOREIGN TABLE               PREPARE TRANSACTION
+  ALTER OPERATOR                   CREATE FUNCTION                  DROP FUNCTION                    REASSIGN OWNED
+  ALTER OPERATOR CLASS             CREATE GROUP                     DROP GROUP                       REFRESH MATERIALIZED VIEW
+  ALTER OPERATOR FAMILY            CREATE INDEX                     DROP INDEX                       REINDEX
+  ALTER POLICY                     CREATE LANGUAGE                  DROP LANGUAGE                    RELEASE SAVEPOINT
+  ALTER PROCEDURE                  CREATE MATERIALIZED VIEW         DROP MATERIALIZED VIEW           RESET
+  ALTER PUBLICATION                CREATE OPERATOR                  DROP OPERATOR                    REVOKE
+  ALTER ROLE                       CREATE OPERATOR CLASS            DROP OPERATOR CLASS              ROLLBACK
+  ALTER ROUTINE                    CREATE OPERATOR FAMILY           DROP OPERATOR FAMILY             ROLLBACK PREPARED
+  ALTER RULE                       CREATE POLICY                    DROP OWNED                       ROLLBACK TO SAVEPOINT
+  ALTER SCHEMA                     CREATE PROCEDURE                 DROP POLICY                      SAVEPOINT
+  ALTER SEQUENCE                   CREATE PUBLICATION               DROP PROCEDURE                   SECURITY LABEL
+  ALTER SERVER                     CREATE ROLE                      DROP PUBLICATION                 SELECT
+  ALTER STATISTICS                 CREATE RULE                      DROP ROLE                        SELECT INTO
+  ALTER SUBSCRIPTION               CREATE SCHEMA                    DROP ROUTINE                     SET
+  ALTER SYSTEM                     CREATE SEQUENCE                  DROP RULE                        SET CONSTRAINTS
+  ALTER TABLE                      CREATE SERVER                    DROP SCHEMA                      SET ROLE
+  ALTER TABLESPACE                 CREATE STATISTICS                DROP SEQUENCE                    SET SESSION AUTHORIZATION
+  ALTER TEXT SEARCH CONFIGURATION  CREATE SUBSCRIPTION              DROP SERVER                      SET TRANSACTION
+  ALTER TEXT SEARCH DICTIONARY     CREATE TABLE                     DROP STATISTICS                  SHOW
+  ALTER TEXT SEARCH PARSER         CREATE TABLE AS                  DROP SUBSCRIPTION                START TRANSACTION
+  ALTER TEXT SEARCH TEMPLATE       CREATE TABLESPACE                DROP TABLE                       TABLE
+  ALTER TRIGGER                    CREATE TEXT SEARCH CONFIGURATION DROP TABLESPACE                  TRUNCATE
+  ALTER TYPE                       CREATE TEXT SEARCH DICTIONARY    DROP TEXT SEARCH CONFIGURATION   UNLISTEN
+  ALTER USER                       CREATE TEXT SEARCH PARSER        DROP TEXT SEARCH DICTIONARY      UPDATE
+  ALTER USER MAPPING               CREATE TEXT SEARCH TEMPLATE      DROP TEXT SEARCH PARSER          VACUUM
+  ALTER VIEW                       CREATE TRANSFORM                 DROP TEXT SEARCH TEMPLATE        VALUES
+  ANALYZE                          CREATE TRIGGER                   DROP TRANSFORM                   WITH
+  BEGIN                            CREATE TYPE                      DROP TRIGGER
+  CALL                             CREATE USER                      DROP TYPE
+  CHECKPOINT                       CREATE USER MAPPING              DROP USER
+postgres=#
+postgres=#
+postgres=#
+postgres=# \?
+General
+  \copyright             show PostgreSQL usage and distribution terms
+  \crosstabview [COLUMNS] execute query and display result in crosstab
+  \errverbose            show most recent error message at maximum verbosity
+  \g [(OPTIONS)] [FILE]  execute query (and send result to file or |pipe);
+                         \g with no arguments is equivalent to a semicolon
+  \gdesc                 describe result of query, without executing it
+  \gexec                 execute query, then execute each value in its result
+  \gset [PREFIX]         execute query and store result in psql variables
+  \gx [(OPTIONS)] [FILE] as \g, but forces expanded output mode
+  \q                     quit psql
+  \watch [SEC]           execute query every SEC seconds
+
+Help
+  \? [commands]          show help on backslash commands
+  \? options             show help on psql command-line options
+  \? variables           show help on special variables
+  \h [NAME]              help on syntax of SQL commands, * for all commands
+
+Query Buffer
+  \e [FILE] [LINE]       edit the query buffer (or file) with external editor
+  \ef [FUNCNAME [LINE]]  edit function definition with external editor
+  \ev [VIEWNAME [LINE]]  edit view definition with external editor
+  \p                     show the contents of the query buffer
+  \r                     reset (clear) the query buffer
+  \s [FILE]              display history or save it to file
+  \w FILE                write query buffer to file
+
+Input/Output
+  \copy ...              perform SQL COPY with data stream to the client host
+  \echo [-n] [STRING]    write string to standard output (-n for no newline)
+  \i FILE                execute commands from file
+  \ir FILE               as \i, but relative to location of current script
+  \o [FILE]              send all query results to file or |pipe
+  \qecho [-n] [STRING]   write string to \o output stream (-n for no newline)
+  \warn [-n] [STRING]    write string to standard error (-n for no newline)
+
+Conditional
+  \if EXPR               begin conditional block
+  \elif EXPR             alternative within current conditional block
+  \else                  final alternative within current conditional block
+  \endif                 end conditional block
+
+Informational
+  (options: S = show system objects, + = additional detail)
+  \d[S+]                 list tables, views, and sequences
+  \d[S+]  NAME           describe table, view, sequence, or index
+  \da[S]  [PATTERN]      list aggregates
+  \dA[+]  [PATTERN]      list access methods
+  \dAc[+] [AMPTRN [TYPEPTRN]]  list operator classes
+  \dAf[+] [AMPTRN [TYPEPTRN]]  list operator families
+  \dAo[+] [AMPTRN [OPFPTRN]]   list operators of operator families
+  \dAp[+] [AMPTRN [OPFPTRN]]   list support functions of operator families
+  \db[+]  [PATTERN]      list tablespaces
+  \dc[S+] [PATTERN]      list conversions
+  \dconfig[+] [PATTERN]  list configuration parameters
+  \dC[+]  [PATTERN]      list casts
+  \dd[S]  [PATTERN]      show object descriptions not displayed elsewhere
+  \dD[S+] [PATTERN]      list domains
+  \ddp    [PATTERN]      list default privileges
+  \dE[S+] [PATTERN]      list foreign tables
+  \des[+] [PATTERN]      list foreign servers
+  \det[+] [PATTERN]      list foreign tables
+  \deu[+] [PATTERN]      list user mappings
+  \dew[+] [PATTERN]      list foreign-data wrappers
+  \df[anptw][S+] [FUNCPTRN [TYPEPTRN ...]]
+                         list [only agg/normal/procedure/trigger/window] functions
+  \dF[+]  [PATTERN]      list text search configurations
+  \dFd[+] [PATTERN]      list text search dictionaries
+  \dFp[+] [PATTERN]      list text search parsers
+  \dFt[+] [PATTERN]      list text search templates
+  \dg[S+] [PATTERN]      list roles
+  \di[S+] [PATTERN]      list indexes
+  \dl[+]                 list large objects, same as \lo_list
+  \dL[S+] [PATTERN]      list procedural languages
+  \dm[S+] [PATTERN]      list materialized views
+  \dn[S+] [PATTERN]      list schemas
+  \do[S+] [OPPTRN [TYPEPTRN [TYPEPTRN]]]
+                         list operators
+  \dO[S+] [PATTERN]      list collations
+  \dp     [PATTERN]      list table, view, and sequence access privileges
+  \dP[itn+] [PATTERN]    list [only index/table] partitioned relations [n=nested]
+  \drds [ROLEPTRN [DBPTRN]] list per-database role settings
+  \dRp[+] [PATTERN]      list replication publications
+  \dRs[+] [PATTERN]      list replication subscriptions
+  \ds[S+] [PATTERN]      list sequences
+  \dt[S+] [PATTERN]      list tables
+  \dT[S+] [PATTERN]      list data types
+  \du[S+] [PATTERN]      list roles
+  \dv[S+] [PATTERN]      list views
+  \dx[+]  [PATTERN]      list extensions
+  \dX     [PATTERN]      list extended statistics
+  \dy[+]  [PATTERN]      list event triggers
+  \l[+]   [PATTERN]      list databases
+  \sf[+]  FUNCNAME       show a function's definition
+  \sv[+]  VIEWNAME       show a view's definition
+  \z      [PATTERN]      same as \dp
+
+Large Objects
+  \lo_export LOBOID FILE write large object to file
+  \lo_import FILE [COMMENT]
+                         read large object from file
+  \lo_list[+]            list large objects
+  \lo_unlink LOBOID      delete a large object
+
+Formatting
+  \a                     toggle between unaligned and aligned output mode
+  \C [STRING]            set table title, or unset if none
+  \f [STRING]            show or set field separator for unaligned query output
+  \H                     toggle HTML output mode (currently off)
+  \pset [NAME [VALUE]]   set table output option
+                         (border|columns|csv_fieldsep|expanded|fieldsep|
+                         fieldsep_zero|footer|format|linestyle|null|
+                         numericlocale|pager|pager_min_lines|recordsep|
+                         recordsep_zero|tableattr|title|tuples_only|
+                         unicode_border_linestyle|unicode_column_linestyle|
+                         unicode_header_linestyle)
+  \t [on|off]            show only rows (currently off)
+  \T [STRING]            set HTML <table> tag attributes, or unset if none
+  \x [on|off|auto]       toggle expanded output (currently off)
+
+Connection
+  \c[onnect] {[DBNAME|- USER|- HOST|- PORT|-] | conninfo}
+                         connect to new database (currently "postgres")
+  \conninfo              display information about current connection
+  \encoding [ENCODING]   show or set client encoding
+  \password [USERNAME]   securely change the password for a user
+
+Operating System
+  \cd [DIR]              change the current working directory
+  \getenv PSQLVAR ENVVAR fetch environment variable
+  \setenv NAME [VALUE]   set or unset environment variable
+  \timing [on|off]       toggle timing of commands (currently off)
+  \! [COMMAND]           execute command in shell or start interactive shell
+
+Variables
+  \prompt [TEXT] NAME    prompt user to set internal variable
+  \set [NAME [VALUE]]    set internal variable, or list all if no parameters
+  \unset NAME            unset (delete) internal variable
+postgres=#
+postgres=#
+postgres=#
+postgres=# \dt pg_catalog.*
+                    List of relations
+   Schema   |           Name           | Type  |  Owner
+------------+--------------------------+-------+----------
+ pg_catalog | pg_aggregate             | table | postgres
+ pg_catalog | pg_am                    | table | postgres
+ pg_catalog | pg_amop                  | table | postgres
+ pg_catalog | pg_amproc                | table | postgres
+ pg_catalog | pg_attrdef               | table | postgres
+ pg_catalog | pg_attribute             | table | postgres
+ pg_catalog | pg_auth_members          | table | postgres
+ pg_catalog | pg_authid                | table | postgres
+ pg_catalog | pg_cast                  | table | postgres
+ pg_catalog | pg_class                 | table | postgres
+ pg_catalog | pg_collation             | table | postgres
+ pg_catalog | pg_constraint            | table | postgres
+ pg_catalog | pg_conversion            | table | postgres
+ pg_catalog | pg_database              | table | postgres
+ pg_catalog | pg_db_role_setting       | table | postgres
+ pg_catalog | pg_default_acl           | table | postgres
+ pg_catalog | pg_depend                | table | postgres
+ pg_catalog | pg_description           | table | postgres
+ pg_catalog | pg_enum                  | table | postgres
+ pg_catalog | pg_event_trigger         | table | postgres
+ pg_catalog | pg_extension             | table | postgres
+ pg_catalog | pg_foreign_data_wrapper  | table | postgres
+ pg_catalog | pg_foreign_server        | table | postgres
+ pg_catalog | pg_foreign_table         | table | postgres
+ pg_catalog | pg_index                 | table | postgres
+ pg_catalog | pg_inherits              | table | postgres
+ pg_catalog | pg_init_privs            | table | postgres
+ pg_catalog | pg_language              | table | postgres
+ pg_catalog | pg_largeobject           | table | postgres
+ pg_catalog | pg_largeobject_metadata  | table | postgres
+ pg_catalog | pg_namespace             | table | postgres
+ pg_catalog | pg_opclass               | table | postgres
+ pg_catalog | pg_operator              | table | postgres
+ pg_catalog | pg_opfamily              | table | postgres
+ pg_catalog | pg_parameter_acl         | table | postgres
+ pg_catalog | pg_partitioned_table     | table | postgres
+ pg_catalog | pg_policy                | table | postgres
+ pg_catalog | pg_proc                  | table | postgres
+ pg_catalog | pg_publication           | table | postgres
+ pg_catalog | pg_publication_namespace | table | postgres
+ pg_catalog | pg_publication_rel       | table | postgres
+ pg_catalog | pg_range                 | table | postgres
+ pg_catalog | pg_replication_origin    | table | postgres
+ pg_catalog | pg_rewrite               | table | postgres
+ pg_catalog | pg_seclabel              | table | postgres
+ pg_catalog | pg_sequence              | table | postgres
+ pg_catalog | pg_shdepend              | table | postgres
+ pg_catalog | pg_shdescription         | table | postgres
+ pg_catalog | pg_shseclabel            | table | postgres
+ pg_catalog | pg_statistic             | table | postgres
+ pg_catalog | pg_statistic_ext         | table | postgres
+ pg_catalog | pg_statistic_ext_data    | table | postgres
+ pg_catalog | pg_subscription          | table | postgres
+ pg_catalog | pg_subscription_rel      | table | postgres
+ pg_catalog | pg_tablespace            | table | postgres
+ pg_catalog | pg_transform             | table | postgres
+ pg_catalog | pg_trigger               | table | postgres
+ pg_catalog | pg_ts_config             | table | postgres
+ pg_catalog | pg_ts_config_map         | table | postgres
+ pg_catalog | pg_ts_dict               | table | postgres
+ pg_catalog | pg_ts_parser             | table | postgres
+ pg_catalog | pg_ts_template           | table | postgres
+ pg_catalog | pg_type                  | table | postgres
+ pg_catalog | pg_user_mapping          | table | postgres
+(64 rows)
+
+postgres=#
+postgres=# \dv pg_catalog.*
+                       List of relations
+   Schema   |              Name               | Type |  Owner
+------------+---------------------------------+------+----------
+ pg_catalog | pg_available_extension_versions | view | postgres
+ pg_catalog | pg_available_extensions         | view | postgres
+ pg_catalog | pg_backend_memory_contexts      | view | postgres
+ pg_catalog | pg_config                       | view | postgres
+ pg_catalog | pg_cursors                      | view | postgres
+ pg_catalog | pg_file_settings                | view | postgres
+ pg_catalog | pg_group                        | view | postgres
+ pg_catalog | pg_hba_file_rules               | view | postgres
+ pg_catalog | pg_ident_file_mappings          | view | postgres
+ pg_catalog | pg_indexes                      | view | postgres
+ pg_catalog | pg_locks                        | view | postgres
+ pg_catalog | pg_matviews                     | view | postgres
+ pg_catalog | pg_policies                     | view | postgres
+ pg_catalog | pg_prepared_statements          | view | postgres
+ pg_catalog | pg_prepared_xacts               | view | postgres
+ pg_catalog | pg_publication_tables           | view | postgres
+ pg_catalog | pg_replication_origin_status    | view | postgres
+ pg_catalog | pg_replication_slots            | view | postgres
+ pg_catalog | pg_roles                        | view | postgres
+ pg_catalog | pg_rules                        | view | postgres
+ pg_catalog | pg_seclabels                    | view | postgres
+ pg_catalog | pg_sequences                    | view | postgres
+ pg_catalog | pg_settings                     | view | postgres
+ pg_catalog | pg_shadow                       | view | postgres
+ pg_catalog | pg_shmem_allocations            | view | postgres
+ pg_catalog | pg_stat_activity                | view | postgres
+ pg_catalog | pg_stat_all_indexes             | view | postgres
+ pg_catalog | pg_stat_all_tables              | view | postgres
+ pg_catalog | pg_stat_archiver                | view | postgres
+ pg_catalog | pg_stat_bgwriter                | view | postgres
+ pg_catalog | pg_stat_database                | view | postgres
+ pg_catalog | pg_stat_database_conflicts      | view | postgres
+ pg_catalog | pg_stat_gssapi                  | view | postgres
+ pg_catalog | pg_stat_progress_analyze        | view | postgres
+ pg_catalog | pg_stat_progress_basebackup     | view | postgres
+ pg_catalog | pg_stat_progress_cluster        | view | postgres
+ pg_catalog | pg_stat_progress_copy           | view | postgres
+ pg_catalog | pg_stat_progress_create_index   | view | postgres
+ pg_catalog | pg_stat_progress_vacuum         | view | postgres
+ pg_catalog | pg_stat_recovery_prefetch       | view | postgres
+ pg_catalog | pg_stat_replication             | view | postgres
+ pg_catalog | pg_stat_replication_slots       | view | postgres
+ pg_catalog | pg_stat_slru                    | view | postgres
+ pg_catalog | pg_stat_ssl                     | view | postgres
+ pg_catalog | pg_stat_subscription            | view | postgres
+ pg_catalog | pg_stat_subscription_stats      | view | postgres
+ pg_catalog | pg_stat_sys_indexes             | view | postgres
+ pg_catalog | pg_stat_sys_tables              | view | postgres
+ pg_catalog | pg_stat_user_functions          | view | postgres
+ pg_catalog | pg_stat_user_indexes            | view | postgres
+ pg_catalog | pg_stat_user_tables             | view | postgres
+ pg_catalog | pg_stat_wal                     | view | postgres
+ pg_catalog | pg_stat_wal_receiver            | view | postgres
+ pg_catalog | pg_stat_xact_all_tables         | view | postgres
+ pg_catalog | pg_stat_xact_sys_tables         | view | postgres
+ pg_catalog | pg_stat_xact_user_functions     | view | postgres
+ pg_catalog | pg_stat_xact_user_tables        | view | postgres
+ pg_catalog | pg_statio_all_indexes           | view | postgres
+ pg_catalog | pg_statio_all_sequences         | view | postgres
+ pg_catalog | pg_statio_all_tables            | view | postgres
+ pg_catalog | pg_statio_sys_indexes           | view | postgres
+ pg_catalog | pg_statio_sys_sequences         | view | postgres
+ pg_catalog | pg_statio_sys_tables            | view | postgres
+ pg_catalog | pg_statio_user_indexes          | view | postgres
+ pg_catalog | pg_statio_user_sequences        | view | postgres
+ pg_catalog | pg_statio_user_tables           | view | postgres
+ pg_catalog | pg_stats                        | view | postgres
+ pg_catalog | pg_stats_ext                    | view | postgres
+ pg_catalog | pg_stats_ext_exprs              | view | postgres
+ pg_catalog | pg_tables                       | view | postgres
+ pg_catalog | pg_timezone_abbrevs             | view | postgres
+ pg_catalog | pg_timezone_names               | view | postgres
+ pg_catalog | pg_user                         | view | postgres
+ pg_catalog | pg_user_mappings                | view | postgres
+ pg_catalog | pg_views                        | view | postgres
+(75 rows)
+
+postgres=#
+postgres=# \dt information_schema.*
+                        List of relations
+       Schema       |          Name           | Type  |  Owner
+--------------------+-------------------------+-------+----------
+ information_schema | sql_features            | table | postgres
+ information_schema | sql_implementation_info | table | postgres
+ information_schema | sql_parts               | table | postgres
+ information_schema | sql_sizing              | table | postgres
+(4 rows)
+
+postgres=# \dv information_schema.*
+                              List of relations
+       Schema       |                 Name                  | Type |  Owner
+--------------------+---------------------------------------+------+----------
+ information_schema | _pg_foreign_data_wrappers             | view | postgres
+ information_schema | _pg_foreign_servers                   | view | postgres
+ information_schema | _pg_foreign_table_columns             | view | postgres
+ information_schema | _pg_foreign_tables                    | view | postgres
+ information_schema | _pg_user_mappings                     | view | postgres
+ information_schema | administrable_role_authorizations     | view | postgres
+ information_schema | applicable_roles                      | view | postgres
+ information_schema | attributes                            | view | postgres
+ information_schema | character_sets                        | view | postgres
+ information_schema | check_constraint_routine_usage        | view | postgres
+ information_schema | check_constraints                     | view | postgres
+ information_schema | collation_character_set_applicability | view | postgres
+ information_schema | collations                            | view | postgres
+ information_schema | column_column_usage                   | view | postgres
+ information_schema | column_domain_usage                   | view | postgres
+ information_schema | column_options                        | view | postgres
+ information_schema | column_privileges                     | view | postgres
+ information_schema | column_udt_usage                      | view | postgres
+ information_schema | columns                               | view | postgres
+ information_schema | constraint_column_usage               | view | postgres
+ information_schema | constraint_table_usage                | view | postgres
+ information_schema | data_type_privileges                  | view | postgres
+ information_schema | domain_constraints                    | view | postgres
+ information_schema | domain_udt_usage                      | view | postgres
+ information_schema | domains                               | view | postgres
+ information_schema | element_types                         | view | postgres
+ information_schema | enabled_roles                         | view | postgres
+ information_schema | foreign_data_wrapper_options          | view | postgres
+ information_schema | foreign_data_wrappers                 | view | postgres
+ information_schema | foreign_server_options                | view | postgres
+ information_schema | foreign_servers                       | view | postgres
+ information_schema | foreign_table_options                 | view | postgres
+ information_schema | foreign_tables                        | view | postgres
+ information_schema | information_schema_catalog_name       | view | postgres
+ information_schema | key_column_usage                      | view | postgres
+ information_schema | parameters                            | view | postgres
+ information_schema | referential_constraints               | view | postgres
+ information_schema | role_column_grants                    | view | postgres
+ information_schema | role_routine_grants                   | view | postgres
+ information_schema | role_table_grants                     | view | postgres
+ information_schema | role_udt_grants                       | view | postgres
+ information_schema | role_usage_grants                     | view | postgres
+ information_schema | routine_column_usage                  | view | postgres
+ information_schema | routine_privileges                    | view | postgres
+ information_schema | routine_routine_usage                 | view | postgres
+ information_schema | routine_sequence_usage                | view | postgres
+ information_schema | routine_table_usage                   | view | postgres
+ information_schema | routines                              | view | postgres
+ information_schema | schemata                              | view | postgres
+ information_schema | sequences                             | view | postgres
+ information_schema | table_constraints                     | view | postgres
+ information_schema | table_privileges                      | view | postgres
+ information_schema | tables                                | view | postgres
+ information_schema | transforms                            | view | postgres
+ information_schema | triggered_update_columns              | view | postgres
+ information_schema | triggers                              | view | postgres
+ information_schema | udt_privileges                        | view | postgres
+ information_schema | usage_privileges                      | view | postgres
+ information_schema | user_defined_types                    | view | postgres
+ information_schema | user_mapping_options                  | view | postgres
+ information_schema | user_mappings                         | view | postgres
+ information_schema | view_column_usage                     | view | postgres
+ information_schema | view_routine_usage                    | view | postgres
+ information_schema | view_table_usage                      | view | postgres
+ information_schema | views                                 | view | postgres
+(65 rows)

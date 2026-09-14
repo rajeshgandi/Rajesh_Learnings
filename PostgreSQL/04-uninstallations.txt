@@ -1,0 +1,24 @@
+Uninstall steps:
+
+source code:
+1. Go to contrib module
+2. make clean
+3. Go to main folder where did you run make and make install
+4. make clean
+
+yum/rpm:
+yum remove postgresql14*
+yum remove postgresql13
+
+
+/usr/pgsql-15/bin/postgresql-14-setup initdb 		# Data directory created in /var/lib/pgsql/15/data
+systemctl enable postgresql-15
+systemctl start postgresql-15
+Here., we are adding postgresql as a service to your linux system
+
+Open service file:
+vi /var/systemd/system/postgresql15.service
+
+Environment=PGDATA=<your_desired_path>
+
+systemctl daemon-reload

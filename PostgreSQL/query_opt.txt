@@ -1,0 +1,212 @@
+Query optimization is a crucial aspect of database management, ensuring that queries execute efficiently by reducing the time and resources required.
+It involves analyzing queries and selecting the best execution plan based on factors like indexes, join methods, and available system resources.
+proper indexing, reducing table scans, and using optimized query syntax can significantly improve database performance, especially for large datasets.
+
+Create a Sample Table with 1 million Rows
+CREATE TABLE employee_data (
+    employee_id SERIAL PRIMARY KEY,
+    name VARCHAR(50),
+    department VARCHAR(50),
+    salary INTEGER,
+    age INTEGER,
+    joining_date DATE
+);
+
+-- Insert 1 million rows
+INSERT INTO employee_data (name, department, salary, age, joining_date)
+SELECT 
+    'Employee' || i, 
+    CASE WHEN i % 5 = 0 THEN 'Sales' 
+         WHEN i % 5 = 1 THEN 'Engineering' 
+         WHEN i % 5 = 2 THEN 'HR' 
+         WHEN i % 5 = 3 THEN 'Finance' 
+         ELSE 'Admin' END,
+    (RANDOM() * 100000)::INTEGER,
+    (RANDOM() * 50 + 20)::INTEGER,
+    NOW() - (RANDOM() * INTERVAL '10 years')
+FROM generate_series(1, 1000000) AS i;
+
+Applying Different Types of Indexes
+
+B-Tree Index (default for ordered searches)
+
+Hash Index (efficient for equality searches)
+
+GIN (Generalized Inverted Index) (useful for multi-valued fields or full-text search)
+
+BRIN (Block Range Index) (best for large datasets with sequential data)
+
+GiST (Generalized Search Tree) (useful for spatial or range queries)
+
+Partial Index (index only a subset of rows, e.g., high-salary employees)
+
+Testing Performance with and without Indexes
+Without Indexes: Run the following query to check execution time without any indexes.
+
+postgres=# explain analyze select * from employee_data where employee_id = 5000;
+                                                            QUERY PLAN
+-----------------------------------------------------------------------------------------------------------------------------------
+ Index Scan using employee_data_pkey on employee_data  (cost=0.42..8.44 rows=1 width=37) (actual time=0.013..0.014 rows=1 loops=1)
+   Index Cond: (employee_id = 5000)
+ Planning Time: 0.169 ms
+ Execution Time: 0.076 ms
+(4 rows)
+
+postgres=# EXPLAIN ANALYZE SELECT * FROM employee_data WHERE salary > 80000;
+                                                      QUERY PLAN
+-----------------------------------------------------------------------------------------------------------------------
+ Seq Scan on employee_data  (cost=0.00..21045.00 rows=199270 width=37) (actual time=0.008..49.885 rows=199956 loops=1)
+   Filter: (salary > 80000)
+   Rows Removed by Filter: 800044
+ Planning Time: 0.086 ms
+ Execution Time: 53.891 ms
+(5 rows)
+With Indexes: Run the following query to check execution time with indexes.
+
+postgres=# create index idx_employee_id_btree on employee_data (employee_id);
+CREATE INDEX
+postgres=# explain analyze select * from employee_data where employee_id = 5000;
+                                                              QUERY PLAN
+--------------------------------------------------------------------------------------------------------------------------------------
+ Index Scan using idx_employee_id_btree on employee_data  (cost=0.42..8.44 rows=1 width=37) (actual time=0.021..0.022 rows=1 loops=1)
+   Index Cond: (employee_id = 5000)
+ Planning Time: 0.171 ms
+ Execution Time: 0.035 ms
+(4 rows)
+
+postgres=# CREATE INDEX idx_employee_high_salary ON employee_data(salary) WHERE salary > 80000;
+CREATE INDEX
+postgres=# EXPLAIN ANALYZE SELECT * FROM employee_data WHERE salary > 80000;
+                                                                   QUERY PLAN
+------------------------------------------------------------------------------------------------------------------------------------------------
+ Bitmap Heap Scan on employee_data  (cost=1958.46..12994.34 rows=199270 width=37) (actual time=13.151..32.777 rows=199956 loops=1)
+   Recheck Cond: (salary > 80000)
+   Heap Blocks: exact=8545
+   ->  Bitmap Index Scan on idx_employee_high_salary  (cost=0.00..1908.64 rows=199270 width=0) (actual time=12.102..12.103 rows=199956 loops=1)
+ Planning Time: 0.298 ms
+ Execution Time: 36.753 ms
+(6 rows)
+
+--Index size check
+postgres=# select pg_size_pretty(pg_relation_size('idx_employee_high_salary'));
+ pg_size_pretty
+----------------
+ 1824 kB
+(1 row)
+Indexing Best Practices
+Use composite indexes if your queries filter by multiple columns
+
+Performance without composite index
+
+postgres=# explain analyze select * from employee_data where name = 'Employee5' and department = 'Sales';
+                                                         QUERY PLAN
+-----------------------------------------------------------------------------------------------------------------------------
+ Gather  (cost=1000.00..15795.10 rows=1 width=37) (actual time=6.249..31.162 rows=1 loops=1)
+   Workers Planned: 2
+   Workers Launched: 2
+   ->  Parallel Seq Scan on employee_data  (cost=0.00..14795.00 rows=1 width=37) (actual time=12.782..20.151 rows=0 loops=3)
+         Filter: (((name)::text = 'Employee5'::text) AND ((department)::text = 'Sales'::text))
+         Rows Removed by Filter: 333333
+ Planning Time: 0.096 ms
+ Execution Time: 31.182 ms
+(8 rows)
+Performance with composite index
+
+postgres=# create index idx_employees_data_name_department on employee_data(name,department);
+CREATE INDEX
+postgres=# explain analyze select * from employee_data where name = 'Employee5' and department = 'Sales';
+                                                                    QUERY PLAN
+---------------------------------------------------------------------------------------------------------------------------------------------------
+ Index Scan using idx_employees_data_name_department on employee_data  (cost=0.42..8.45 rows=1 width=37) (actual time=0.030..0.032 rows=1 loops=1)
+   Index Cond: (((name)::text = 'Employee5'::text) AND ((department)::text = 'Sales'::text))
+ Planning Time: 0.245 ms
+ Execution Time: 0.051 ms
+(4 rows)
+Use index on only the column where we do filtering
+
+Index foreign key columns to speed up join operations
+
+If workload is write heavy then avoid index
+
+Best practices for query optimization
+Avoid using wildcard characters
+Limit the number of returned rows
+Use appropriate data types
+Enable slow query logging
+- Logging_collector = ‘on’
+- log_min_duration_statement = 1000
+Update table stats with VACUUM
+VACUUM analyze orders;
+copy vs insert
+Use COPY when loading large volumes of data quickly, such as initial data imports or bulk loading from files.
+Use INSERT for smaller, ad-hoc inserts or when inserting data row-by-row programmatically in an application.
+Create indexes on columns used in join conditions
+Filter data before performing joins using where clauses
+Partition large tables to improve join performance
+Use parallel query which allows PostgreSQL to utilize multiple CPU cores for a single query
+Use partitioning such as range partitioning, list partitioning (divides data based on a list of discrete values), hash partitioning (distribute rows evenly)
+Example of List Partitioning
+Let’s consider a table named orders that we want to partition by country.
+
+Create the Partitioned Table
+
+CREATE TABLE orders (
+    order_id SERIAL,
+    customer_name TEXT,
+    amount DECIMAL(10, 2),
+    country TEXT,
+    PRIMARY KEY (order_id, country)  -- include the country column in the primary key
+) PARTITION BY LIST (country);
+Create Partitions Based on List Values
+
+CREATE TABLE orders_usa PARTITION OF orders FOR VALUES IN ('USA');
+CREATE TABLE orders_canada PARTITION OF orders FOR VALUES IN ('Canada');
+CREATE TABLE orders_mexico PARTITION OF orders FOR VALUES IN ('Mexico');
+Insert Data and Test Query Performance
+
+Now, when you insert data into the orders table, rows automatically go to the correct partition based on the country value:
+
+INSERT INTO orders (customer_name, amount, country) VALUES ('Alice', 100, 'USA');
+INSERT INTO orders (customer_name, amount, country) VALUES ('Bob', 200, 'Canada');
+INSERT INTO orders (customer_name, amount, country) VALUES ('Carlos', 150, 'Mexico');
+If you query orders from Canada, PostgreSQL only scans the orders_canada partition:
+
+postgres=# Explain analyze select * from orders where country = 'Canada';
+                                     QUERY PLAN
+------------------------------------------------------------------------------------
+ Result  (cost=0.00..0.00 rows=0 width=0) (actual time=0.002..0.003 rows=0 loops=1)
+   One-Time Filter: false
+ Planning Time: 0.146 ms
+ Execution Time: 0.020 ms
+(4 rows)
+
+Set various parameters in conf file of databases to enhance performance such as in postgresql we can set the following parameters
+
+Shared_buffers
+work_mem
+maintenance_work_mem
+effective_cache_size
+autovacuum
+
+Architectural Updates
+
+HDD to SDD
+Sharding (distributes data across multiple servers)
+Horizontal scaling (adds more database nodes to distribute workload)
+Vertical scaling
+Partitioning
+
+Extensions
+Use extensions for specific databases like for postgres use the following
+
+timescaleDB
+pg_partman
+pg_stat_statement
+citus
+pg_cron
+file_fdw
+pg_repack
+pgpool
+patroni
+pgBouncer
+pgvector

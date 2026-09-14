@@ -1,0 +1,57 @@
+ARCHITECTURE: Memory + BGP + Phy Files
+
+Local Memory
+  work_mem
+  maintenance_work_mem
+  temp_buffers
+
+Shared Memory
+  shared_buffers
+  wal_buffers
+  CLOG
+
+Postmaster
+User Backend Process
+Wal Writer
+Background writer
+Checkpoint
+
+Datafiles
+Control File
+walfiles
+
+Memory + Background Process = Instance
+Instance + Physical files = Database
+
+
+How SELECT works:
+
+1, Syntax check
+2. Schemantic check (permission, object exists) 
+3. Optimizer Choose best Plan
+4. User backend process bring the data
+5. Display the output
+
+UPDATE: 1,100 to 1,200
+1. syntax
+2. schemantic
+3. copy the record within table for further select [1,1,100]
+4. Bring the information to shared buffer [1,1,100]
+5. Update in shared buffers [2,1,200]
+6. Copy to wal buffers [2,1,200]
+7. Display the content on the screen UPDATE 1
+8. commit
+9. Wal writer Copy the content from wal buffers to walfile
+10. COMMIT is display on the screen
+11. walwriter invokes checkpointer and writes info in Wal-File section of control file
+12. BGWR writes info from shared buffer to Datafile and inform to checkpointer
+13. Checkpointer writes info in Data-file section of control file.
+14. Both sections matches , Data consistent
+
+wal files are required for PITR
+
+Instance Recovery : Copy content from walfile to datafile after instance crash during startup
+
+
+
+

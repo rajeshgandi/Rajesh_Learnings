@@ -1,0 +1,106 @@
+archive_mode = on
+archive_command = 'cp %p /u01/archives/%f'
+restore_command = 'scp 192.168.110.174:/u01/archives/%f %p'
+wal_log_hints = on [This is important for doing switch over. this need to enabled in primary]
+
+task 1 - Backup and Restore in different machine
+-------
+/usr/pgsql-15/bin/pg_basebackup -D /u01/pgsql/15 -Ft --checkpoint=fast -P -h 192.168.110.174
+
+pg_hba.conf --> replication (database) and  max_wal_senders=1
+
+cd /u01/pgsql/15
+tar -xf base.tar
+mv pg_wal.tar pg_wal
+cd pg_wal
+tar -xf pg_wal.tar 
+rm -rf pg_wal.tar 
+cd ../
+rm -rf base.tar
+
+/usr/pgsql-15/bin/pg_ctl start -D /u01/pgsql/15
+
+task 2 - Backup and Restore in different machine + apply archivelogs
+------
+touch recovery.signal
+restore_command = 'scp 192.168.110.174:/u01/archivelogs/%f %p'		#postgresql.conf
+
+(It will aplly archive logs till available. wait for the next archivelog. 
+Ff not found, then it will select new timeline-id 2 and then start database)
+
+recovery.done
+
+task 3 - Backup and Restore in different machine + apply archivelogs + until my fav archive (PITR)
+------
+touch recovery.signal
+restore_command = 'scp 192.168.110.174:/u01/archivelogs/%f %p'		#postgresql.conf
+recovery_target_lsn='0/198FB4A0'
+recovery_target_name
+recovery_target_time
+recovery_target_xid
+
+[recovery stopping after WAL location (LSN) '0/198FB4A0'
+Execute pg_wal_replay_resume() to promote]
+
+It will select new timelien 2
+
+task 4 - Backup and Restore in different machine + apply archivelogs + wait for next archive to come 
+(Streaming replication - 1 wal behind (warm standby)
+-----
+touch standby.signal
+restore_command = 'scp 192.168.110.174:/u01/archivelogs/%f %p'		#postgresql.conf
+
+[entering standby mode
+restored log file "00001" from archive
+scp : No such file or directory..wait until next archive]
+
+
+task 5 - Backup and Restore in different machine + apply archivelogs + start streaming wals
+------
+standby_mode='on'
+touch standby.signal
+restore_command = 'scp 192.168.110.174:/u01/archivelogs/%f %p'		#postgresql.conf in standby
+primary_conninfo ='user=postgres password=postgres host=192.168.110.174 port=5432 sslmode=disable sslcompression=1' #postgresql.conf in standby
+
+[entering standby mode
+restored log file "00001" from archive
+scp : No such file or directory..wait until next archive
+started streaming from WAL from primary at '0/198FB4A0' on timeline 1]
+
+
+switch-over:
+/usr/pgsql-15/bin/pg_ctl promote -D /u01/pgsql/15 [in standby]
+[Received promote request
+terminating walreceiver process due to administrator command
+new timeline id 2
+accept connections]
+
+Add archivelogs folder and give necessary permissions
+
+
+Rewind:
+--------
+stop postgres in primary
+pg_rewind --target-pgdata=/u01/pgsql/15 --source-server="port 5432 host=<promoted-server>"  # old primary
+
+create standby.signal and add primary_conninfo details in old-primary to make it current standby
+
+task 6 - Backup and Restore in different machine + apply archivelogs + start streaming wals
+------
+#primary
+synchrnonus_standby_names = '*'
+
+touch standby.signal
+restore_command = 'scp 192.168.110.174:/u01/archivelogs/%f %p'		#postgresql.conf
+primary_conninfo ='user=postgres password=postgres host=192.168.110.174 application_name=random'
+
+
+
+PASSWORDLESS CONNECTIVITY:
+---------------------------
+ssh-keygen -t rsa
+ssh postgres@10.129.6.104   mkdir -p /home/postgres/.ssh
+cat .ssh/id_rsa.pub | ssh postgres@10.129.6.104 'cat >> /home/postgres/.ssh/authorized_keys'
+ssh postgres@10.129.6.104 "chmod 700 .ssh; chmod 640 .ssh/authorized_keys"
+ssh 10.129.6.104
+

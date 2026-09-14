@@ -1,0 +1,92 @@
+------------------------- Archive Cleanup ------------------------
+
+cd /u01/pgsql/archive_logs
+ls -lrt *backup*
+/usr/pgsql-9.6/bin/pg_archivecleanup -d /u01/pgsql/archive_logs 00000001000005C60000006B.000000D0.backup
+
+------------------ create user -----------------------
+CREATE USER ntms_dev WITH PASSWORD 'ntms_dev';
+CREATE DATABASE ntms_dev WITH OWNER ntms_dev ENCODING 'UTF8';
+CREATE SCHEMA ntms_dev;
+-------------------------------
+sed -i 's/old/new/g' dump.sql
+---------------------------- cron-enable ---------------------
+sudo su -
+echo "postgres" > /etc/cron.allow
+
+----------------------csv postgres -----------------------------
+PGPASSWORD=XXXXXX psql  -h 100.65.203.8   -U ld_final -d ld_live -c  "\copy (select grade_id,grade_name,percentage from grade_master)  to  '/home/postgres/prabanda_jan22_ld.csv' csv header"  >  /home/postgres/ld.log
+
+\copy (select * from m_mhs_outbound_dtls) to '/home/postgres/irf_jun12.csv' csv header;
+\COPY hosp_bank_dtls_dummy FROM '/home/postgres/17sathish.csv' DELIMITERS ',' CSV HEADER;
+
+abnhpmapiprod=>\copy KARNATAKA_PACKAGE_MST from '/home/postgres/mani.csv' delimiter E'\t' csv header;
+
+\COPY kb_wallet_consumption FROM '/u01/KBF1.csv' DELIMITERS ',' CSV;
+\COPY kb_wallet_consumption FROM '/u01/KBF1.csv' DELIMITERS ',' CSV HEADER;
+
+psql -d ndwh -U postgres    -c "\copy (SELECT * FROM summary.tms_t_detailed_case_report WHERE  pat_state_id='32'  AND REG_HOSP_DATE >'2020-07-01' and REG_HOSP_DATE <'2020-08-14')  to  '/home/postgres/part1.csv' csv header"
+
+----------------------- pg_dump -------------------
+ONLY TABLE STRUCTURE 
+ pg_dump -d empnl_live -U empnl_final -t total_tms_hem_data  --exclude-table-data=total_tms_hem_data  > total_tms_hem_data_j3.sql
+ 
+ ONLY DATA
+ pg_dump -d empnl_live -U empnl_final  --data-only -t total_tms_hem_data > ASD.sql
+ 
+ INSERT SCRIPTS
+ pg_dump -d empnl_live -U empnl_final --column-inserts --data-only -t total_tms_hem_data > ASD.sql
+
+------------------------- read-only user ------------------------
+CREATE USER ntms_read WITH PASSWORD 'ntms_read';				          	use psql
+GRANT CONNECT ON DATABASE ntms_live TO ntms_read;                   use ntms_final                                                                 
+GRANT USAGE ON SCHEMA ntms_final TO ntms_read;                      use ntms_final
+GRANT SELECT ON ALL TABLES IN SCHEMA ntms_final TO ntms_read;       use ntms_final
+ALTER DEFAULT PRIVILEGES IN SCHEMA ntms_final                          
+GRANT SELECT ON TABLES TO ntms_read;                                use ntms_final
+alter user ntms_read set search_path ='ntms_final',public;		    	use ntms_read
+
+----------------------- streaming replication -------------------------
+PRIMARY 100.65.182.188
+SLAVE   100.65.182.189
+
+In PRIMARY:
+CREATE USER replica REPLICATION LOGIN ENCRYPTED PASSWORD 'replicauser@';
+
+In SLAVE:
+stop standby
+
+ssh-keygen -t rsa
+ssh postgres@100.65.182.188 mkdir -p .ssh
+cat .ssh/id_rsa.pub | ssh postgres@100.65.182.188 'cat >> .ssh/authorized_keys'
+ssh postgres@100.65.182.188 "chmod 700 .ssh; chmod 640 .ssh/authorized_keys"
+
+
+ssh 100.65.182.188 (Ckecking....should not ask password) 
+
+In SLAVE:
+/usr/pgsql-9.6/bin/pg_basebackup -U replica -P -D  /u01/pgsql/data --host=100.65.182.188 --port=5432 --checkpoint=fast
+
+In SLAVE:
+vi /u01/pgsql/data/recovery.conf
+
+standby_mode = 'on'
+primary_conninfo = 'user=replica password=replicauser@ host=100.65.182.188 port=5432 sslmode=prefer sslcompression=1'
+restore_command = 'scp postgres@100.65.182.188:/u01/pgsql/archive_logs/%f %p'
+trigger_file = '/tmp/postgresql.trigger.5432'
+
+start standby
+
+If required,..chmod 700 /u01/pgsql/data
+ 
+------------------------sequence alter -----------------
+test_db=> SELECT last_value FROM case_review_seq;
+ last_value
+------------
+       2312
+(1 row)
+
+
+alter sequence seq_name restart with 1;
+
+-------------------------- 

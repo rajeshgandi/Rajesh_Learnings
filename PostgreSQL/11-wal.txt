@@ -1,0 +1,106 @@
+wal files - physical design-logical design 
+
+Wal Files
+-------------
+Timeline ID	
+00000001     00000000     00000001
+..
+000000010000000000000009
+00000001000000000000000A
+..
+00000001000000000000000F
+000000010000000000000010
+..
+000000010000000000000019
+00000001000000000000001A
+..
+00000001000000000000001F
+000000010000000000000020
+000000010000000000000021
+..
+000000010000000000000029
+00000001000000000000002A
+..
+00000001000000000000002F
+..
+00000001000000000000009F
+0000000100000000000000A0
+..
+0000000100000000000000FF
+000000010000000100000000
+000000010000000100000001
+000000010000000100000002
+..
+0000000100000001000000FF
+000000010000000200000000
+..
+00000001000000FF000000FF
+0000000100000100000000FF
+..
+00000001FFFFFFFF000000FF
+
+------------------
+
+00000001000000270000003D
+alter system  reset logs;
+00000002000000270000003E
+
+=============================
+
+[postgres@lab01 pg_wal]$ ls -lrt
+total 65536
+drwx------. 2 postgres postgres        6 May 19 08:29 archive_status
+-rw-------. 1 postgres postgres 16777216 May 19 08:30 000000010000000000000001
+-rw-------. 1 postgres postgres 16777216 May 19 08:30 000000010000000000000002
+-rw-------. 1 postgres postgres 16777216 May 19 08:30 000000010000000000000003
+-rw-------. 1 postgres postgres 16777216 May 19 08:30 000000010000000000000004
+[postgres@lab01 pg_wal]$ psql -c "checkpoint";
+CHECKPOINT
+[postgres@lab01 pg_wal]$ ls -lrt
+total 65536
+drwx------. 2 postgres postgres        6 May 19 08:29 archive_status
+-rw-------. 1 postgres postgres 16777216 May 19 08:30 000000010000000000000005
+-rw-------. 1 postgres postgres 16777216 May 19 08:30 000000010000000000000006
+-rw-------. 1 postgres postgres 16777216 May 19 08:30 000000010000000000000007
+-rw-------. 1 postgres postgres 16777216 May 19 08:31 000000010000000000000004
+[postgres@lab01 pg_wal]$
+
+PITR cannot be possible only with these walfiles. we need archivelog to achieve this.
+current walfile is 4, but as checkpoint occurs, (if previous wal files size is less than min_wal_size), then it flushed the old wals (data entered into datafile) and creates the new future walfiles in advance.
+
+
+checkpoint occurs every 6 min
+manual checkpoint
+when it reaches min_wal_size
+
+Logical naming
+-----------------
+[postgres@lab01 pg_wal]$ /usr/pgsql-15/bin/pg_waldump 000000010000000000000007
+rmgr: Standby     len (rec/tot):     50/    50, tx:          0, lsn: 0/07000028, prev 0/06000148, desc: RUNNING_XACTS nextXid 760 latestCompletedXid 759 oldestRunningXid 760
+pg_waldump: error: error in WAL record at 0/7000028: invalid record length at 0/7000060: wanted 24, got 0
+[postgres@lab01 pg_wal]$
+
+[postgres@lab01 pg_wal]$ psql -c "insert into emp values(1,100);
+"
+INSERT 0 1
+[postgres@lab01 pg_wal]$ /usr/pgsql-15/bin/pg_waldump 000000010000000000000007
+rmgr: Standby     len (rec/tot):     50/    50, tx:          0, lsn: 0/07000028, prev 0/06000148, desc: RUNNING_XACTS nextXid 760 latestCompletedXid 759 oldestRunningXid 760
+rmgr: Heap        len (rec/tot):     63/    63, tx:        760, lsn: 0/07000060, prev 0/07000028, desc: INSERT+INIT off 1 flags 0x00, blkref #0: rel 1663/5/16432 blk 0
+rmgr: Transaction len (rec/tot):     34/    34, tx:        760, lsn: 0/070000A0, prev 0/07000060, desc: COMMIT 2023-05-19 08:52:32.564187 IST
+rmgr: Standby     len (rec/tot):     50/    50, tx:          0, lsn: 0/070000C8, prev 0/070000A0, desc: RUNNING_XACTS nextXid 761 latestCompletedXid 760 oldestRunningXid 761
+pg_waldump: error: error in WAL record at 0/70000C8: invalid record length at 0/7000100: wanted 24, got 0
+[postgres@lab01 pg_wal]$
+
+
+07000060--> 7th walfile at 60th position
+Next tx is at invalid record length at 0/7000100
+
+
+
+
+
+
+
+
+
+
