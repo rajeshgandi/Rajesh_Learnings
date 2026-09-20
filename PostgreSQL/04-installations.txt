@@ -25,22 +25,22 @@ Installation
 
 	cd /root/postgresql-15.2
 	
-    	./configure					#check if pre requisites installed or not?
-    	make						#compile all C programs
-    	make install					#run all C programs
+    ./configure					#check if pre requisites installed or not?
+    make						#compile all C programs
+    make install				#run all C programs
     
 	useradd postgres				#add postgres user to control all postgres activities
 	passwd postgres					#give password
-    	mkdir -p /u01					#Create mount point
+    mkdir -p /u01					#Create mount point
    	
-	chown postgres:postgres /u01			#Gave full permission on mount point
-    	mkdir -p /u01/pgsql/15				#decide the database files location
-    	chown -R postgres:postgres /u01/pgsql/15    	#Gave full permission to postgres user
-	su - postgres					#switch to postgres
+	chown postgres:postgres /u01				#Gave full permission on mount point
+    mkdir -p /u01/pgsql/15						#decide the database files location
+    chown -R postgres:postgres /u01/pgsql/15    #Gave full permission to postgres user
+	su - postgres								#switch to postgres
 	
 	/usr/local/pgsql/bin/initdb -D /u01/pgsql/15			#initializing the cluster
 	/usr/local/pgsql/bin/pg_ctl -D /u01/pgsql/15 start		#start the cluster
-	/usr/local/pgsql/bin/psql					#login to database
+	/usr/local/pgsql/bin/psql								#login to database
 	
 2. yum method
 ---------------
