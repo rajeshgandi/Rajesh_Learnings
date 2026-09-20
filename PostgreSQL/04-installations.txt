@@ -113,6 +113,13 @@ export PATH
 
 [postgres@lab01 ~]$ . .bash_profile
 
+$psql
+psql (15.2, server 14.7)
+postgres=#
+
+15.2 --> client --> psql binaries
+14.7 --> database version.
+
 Install Extensions Module
 --------------------------
 -> source code
