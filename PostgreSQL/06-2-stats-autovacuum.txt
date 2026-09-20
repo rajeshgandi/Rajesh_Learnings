@@ -81,6 +81,8 @@ select xmin, * from emp ;
 xmin ==> tx.id of the row. [For every insert]
 xmax ==> UPDATE statement, xmax will update, xmin will become zero 
 
+XMIN is the identity (transaction ID) of the inserting transaction for this row version.
+XMAX is the identity (transaction ID) of the deleting transaction or 0 for an undeleted row version
 ================================
 
 "canceling statement due to conflict with recovery"
