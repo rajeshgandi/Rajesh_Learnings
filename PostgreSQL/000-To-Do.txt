@@ -1,1 +1,29 @@
+Top 5 extensions
+Top 5 external extensions
+EDB Features
+Indexes and its types
+Joins and its types
+Explain Analyze
+AWS-SAA Pdf
+Terraform/Git/Iac
+RDS vs Aurora PostgreSQL
+Top 5 challenges you faced
+Major version upgrade issues
+Database Migrations issues
+Major Version Upgrade New Features
+Top 5 Performance Issues
+Shell Script Automations
+Python Script Automations
+
+
 pgbadger
+pg_audit
+pgbackrest
+patroni
+pg-pool
+Ora2Pg
+
+
+Streaming replication
+Logical Replication
+
