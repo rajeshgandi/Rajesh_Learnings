@@ -79,9 +79,7 @@ This craetes multzact tx.ids., it has a limit of 400 millions
 =================
 select xmin, * from emp ;
 xmin ==> tx.id of the row. [For every insert]
-
-vm: vm is useful if you are doing index only scans
-fsm: 
+xmax ==> UPDATE statement, xmax will update, xmin will become zero 
 
 ================================
 
