@@ -1,0 +1,102 @@
+Monitoring Activities:
+1. sessions, long running, locks
+2. cpu load, cpu utilization, ram usage,  disk usage
+3. Status of scheduled cronjobs, daily backups
+4. Checking the replication status between primary and standbys
+5. Stats gather : analyze, vacuum
+
+Day to Day Activities:
+1. Table-level and Schema-level dump from one environment to other environment.
+2. Creating users and databases and managing them in Prod, UAT and Testing environments.
+3. Performance Tuning.
+4. Creating read-only users and granting necessary permissions.
+5. Fix the replication issues, if any.
+6. Maintaining Disk space following the retention policy.
+
+Major Tasks:
+1. pg_upgrade
+2. pgpool
+3. Streaming Replication
+4. Logical  Replication
+5. Oracle to Postgres Migration
+6. pgBackrest
+7. BARMAN
+8. BART
+9. EFM
+10. patroni, repmgr
+11. Point in Time Recovery
+12. Installing Postgres
+
+Performance Tuning:
+1. OS Tuning -----> RAM, CPU's, I/O bandwidth
+2. DB Tuning ------> Postgresql.conf and pg_hba.conf
+3. Application Tuning ----> Query Tuning.
+
+1. Sub-queries
+2. Join orders
+3. Creating indexes
+4. Avoid expressions and 'not' conditions
+
+Common performance issues:
+1. Full Table Scans
+2. Bad SQL
+3. Sort using disk
+4. Join Orders
+5. Old or missing statistics
+6. I/O issues
+7. Bad Connection Management
+
+Tips:
+1. Identify Slow queries
+2. Review the query execution plan
+3. Optimize the statistics 
+4. Restructure SQL statements
+5. Add/Remove indexes
+6. Review Final Execution plan.
+
+What you need to check in explain plan:
+1. cardinality -- row estimates count
+2. Access Method : Sequential or Index
+3. Join Method : Hash join, Nested loop join
+4. Joim Type and Join Orders
+5. Sort Type : Quicksort or external merge sort
+
+
+Five Linux Commands:
+1. uptime
+2. top
+3. chown/chmod
+4. iostat
+5. iconv
+6. telnet
+7. ps -ef
+8. free
+
+Five Challenges:
+1. Setup streaming replication using the latest full backup
+2. Point-in-time Recovery
+3. Misssing wal-file : Permissions/pg_resetwal
+4. Oracle to Postgres Migration : procedures, data-type issues
+5. Upgradation without/minimal downtime
+
+Five DBA Responsibilities:
+1. Data Security
+2. Data encryption
+3. High Availability
+4. Ensure Maximum Performance
+5. Monitoring the access (roles and groups)
+
+
+Five Most Common Questions
+1. Postgres Architecture
+2. MVCC
+3. Vacuum and Vacuum Full, explian and explain analyze, vm and fsm
+4. Backup strategy
+5. Replication strategy
+
+Oracle Tasks:
+1. Monitoring - sessions, locks
+2. expdp/impdp
+3. Loading csv data into tables
+4. creating users,tablespaces,datafiles and managing them
+5. Fix standby issues. (missing archivelog, corrupt datafile)
