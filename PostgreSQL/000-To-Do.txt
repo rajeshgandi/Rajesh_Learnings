@@ -23,6 +23,21 @@ patroni
 pg-pool
 Ora2Pg
 
+===========
+
+Fill Factor: 
+What is Fill Factor?
+Definition: An integer value from 10 to 100 (default is 100).
+Function: A fill factor of 80 means PostgreSQL fills a data page up to 80% and leaves 20% empty for incoming updates and insertions
+
+-- HOT Updates
+
+Quick Rules of Thumb
+Default (100): Best for read-only or append-only tables where rows are rarely updated.
+Lowered (70-80): Recommended for tables with frequent updates to enable HOT updates and reduce table bloat.
+Configuration Example: ALTER TABLE table_name SET (fillfactor = 80);
+
+========
 
 Streaming replication
 Logical Replication
