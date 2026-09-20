@@ -76,6 +76,13 @@ In base directory, that info is stored in pg_multixact folder
 Locks entire emp table, just for updating few records within table.
 This craetes multzact tx.ids., it has a limit of 400 millions
 
+=================
+select xmin, * from emp ;
+xmin ==> tx.id of the row. [For every insert]
+
+vm: vm is useful if you are doing index only scans
+fsm: 
+
 ================================
 
 "canceling statement due to conflict with recovery"
