@@ -42,3 +42,100 @@ Configuration Example: ALTER TABLE table_name SET (fillfactor = 80);
 Streaming replication
 Logical Replication
 
+===========
+Risks of Performing Aurora Major Version Upgrades:
+1. Downtime and Availability: 
+2. Compatibility Issues:
+3. Performance Degradation:
+4. Bugs and Stability:
+5. Testing Overhead:
+
+Risks of Not Performing Aurora Major Version Upgrades:
+1. Lack of Support:
+2. Security Vulnerabilities:
+3. Missed Features and Improvements:
+4. Technical Debt:
+5. Compliance Risks:
+
+Mitigation Strategies:
+1. Thorough Testing:
+2. Backup and Rollback:
+3. Incremental Upgrades:
+4. Monitoring:
+5. Consult Documentation and Support:
+=====================
+
+===================
+Top 5 extensions
+pg_stat_statements
+Query performance analysis
+pg_cron
+Schedule SQL/maintenance jobs
+pg_partman
+Automated partition management
+pg_repack
+Remove table/index bloat with minimal locking
+postgres_fdw
+Access/query remote PostgreSQL databases
+dblink
+Connect to remote PostgreSQL databases
+pgAudit
+Detailed database auditing
+auto_explain
+Identify slow query execution plans
+uuid-ossp
+Generate UUIDs
+---
+For interviews, remember:
+
+postgres_fdw → generally preferred for ongoing foreign-table access and query planning/pushdown.
+
+dblink → useful for ad-hoc remote queries and legacy implementations.
+--
+Top 5 external extensions
+HypoPG
+Hypothetical indexes
+pgvector
+Vector similarity search / AI workloads
+
+auto_explain.log_min_duration = 250
+
+auto_explain.log_min_duration-1	The execution threshold in milliseconds. Set to 0 or higher to activate.
+auto_explain.log_analyzeoff	When turned on, logs actual execution times and loops (equivalent to running EXPLAIN ANALYZE).
+auto_explain.log_buffersoff	Includes buffer/memory usage statistics in the logs (requires log_analyze to be on).
+auto_explain.log_timingon	Controls whether row-timing overhead is tracked. Turning this off slightly reduces overhead when log_analyze is active.
+auto_explain.log_nested_statementsoff	When turned on, logs queries executed inside stored procedures or PL/pgSQL functions.
+auto_explain.log_parameter_max_length-1	Controls the length of query parameter logs. -1 logs full parameters, 0 hides them, and >0 truncates them to that size in bytes.
+
+
+EDB Features
+Indexes and its types
+Joins and its types
+Explain Analyze
+AWS-SAA Pdf
+Terraform/Git/Iac
+RDS vs Aurora PostgreSQL
+
+Top 5 challenges you faced
+1. Ping database bi-directional replication during migration
+2. Migrating 1TB database with minimal downtime (Multiple DMS tasks)
+3. Permission change for wal file after OS patching
+4. Upgradation without/minimal downtime
+5. random_page_cost to 1
+6. MSSQL RDS-to-Onprem migration Foglight
+
+
+Major version upgrade issues
+Database Migrations issues
+Major Version Upgrade New Features
+Top 5 Performance Issues
+Shell Script Automations
+Python Script Automations
+
+
+pgbadger
+pg_audit
+pgbackrest
+patroni
+pg-pool
+Ora2Pg
