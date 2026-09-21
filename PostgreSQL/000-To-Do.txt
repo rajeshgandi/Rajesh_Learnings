@@ -126,8 +126,71 @@ Top 5 challenges you faced
 
 
 Major version upgrade issues
+1. No downtime using Logical replication
+2. Datamart having replication slots
+3. Performance issue arised post upgrade
+4. One particular minor version consuming lot of FreeLocalStorage. Fixed after doing minor version upgrade
+5. Extension update missed
+
+
 Database Migrations issues
+
 Major Version Upgrade New Features
+12 2019 Pluggable Storage, CTE Inlining, Generated Columns, pg_checksums online
+13 2020 Parallel Vacuum, Incremental Sort, De-duplication in B-tree, WAL usage stats
+14 2021 Heavy Connection Perf, SEARCH/CYCLE in CTEs, pg_stat_progress_copy, Multirange
+15 2022 MERGE command, Logical Replication row filtering, pg_stat_io, PUBLIC schema changes
+16 2023 Logical Replication from standbys, pg_stat_io enhanced, bulk load COPY perf, I/O stats
+17 2024 Incremental Backup, Logical Failover Slots, Vacuum improvements, JSON_TABLE
+18 2025 Virtual generated columns, UUIDv7, Async I/O (io_method), pg_upgrade --copy, MAINTAIN privilege
+
+v12:
+ CTE Inlining (WITH Queries Optimization)
+ pg_checksums Utility (Enable Online)
+Improved Partitioning Performance
+
+v13:
+Parallel VACUUM
+Incremental Sort
+B-tree Deduplication
+ WAL Usage Tracking in EXPLAIN
+Hash Partitioning Improvements & Logical Replication for Partitioned Tables
+
+v14:
+Heavy Connection Handling Performance
+Multirange Typpes
+pg_stat_progress_copy
+Subscriptions Can Skip Initial Data Copy & Binary Streaming
+
+v15:
+MERGE Command (SQL Standard)
+ Logical Replication Row Filtering & Column Lists
+pg_stat_io View
+PUBLIC Schema Security Change
+Performance: Sort and Compression Improvements
+
+v16:
+Logical Replication from Standbys
+Bulk COPY Performance (Load Optimization)
+Allow Parallel Execution of FULL and Internal RIGHT OUTER Joins
+Improved Monitoring: pg_stat_all_tables Enhancements:  last_seq_scan, last_idx_scan
+
+v17:
+ Incremental Backup (pg_basebackup)
+ Logical Failover Slots
+ JSON_TABLE Function
+Vacuum Improvements (Eager Freeze, TID Range Scan)
+Performance: Memory & I/O Improvements
+
+v18:
+ UUIDv7 Generation Function (uuidv7())
+pg_upgrade --copy Mode..  can now upgrade in parallel with --jobs
+MAINTAIN Privilege
+
+
+
+
+
 Top 5 Performance Issues
 Shell Script Automations
 Python Script Automations
